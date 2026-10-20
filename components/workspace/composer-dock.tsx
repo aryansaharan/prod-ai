@@ -631,6 +631,7 @@ function suggestionsFor(bp: Blueprint, scope: ObjectRef | null): string[] {
     const t = a && gateable(a);
     if (a && t) out.push(`Make ${a.name} ask before it can ${midSentence(bp, t.name)}`);
   }
+  out.push(bp.meta.theme.look === "midnight" ? "Try the Paper look" : "Make it dark");
   out.push(bp.meta.theme.primary.toLowerCase() === "#0f766e" ? "Make it indigo" : "Make it teal");
   return out.slice(0, 3);
 }

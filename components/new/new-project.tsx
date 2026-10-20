@@ -17,6 +17,8 @@ import { CodeWritingView } from "./code-writing";
 import { KindLine, type AppKind } from "./kind-switch";
 import { PRICE } from "@/lib/prices";
 import { connectionsFor, isConnectionsQuestion, isNothingOption, toggleConnection } from "./connections";
+import { LookCard } from "@/components/looks/look-preview";
+import { LOOK_IDS, type CodeLook, type LookId } from "@/lib/looks";
 
 type Step = "describe" | "questions" | "planning";
 
@@ -88,6 +90,9 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
   // "Sketch it" pressed while Claude is still reading the note: it starts the moment the kind is known.
   const [queued, setQueued] = useState<{ skip: boolean } | null>(null);
   const [planKind, setPlanKind] = useState<AppKind>("business");
+  // The look, kept per kind: a business app starts Clean; a code app starts with a look Prod AI designs for the idea.
+  const [businessLook, setBusinessLook] = useState<LookId>("clean");
+  const [codeLook, setCodeLook] = useState<CodeLook>("auto");
   const tailoredHere = tailored?.brief === brief ? tailored.questions : null;
   const tailoring = llm === "live" && step === "questions" && settledFor !== brief && !tailoredHere;
   const hasTailored = Boolean(tailoredHere);
@@ -154,9 +159,9 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
     if (!now && as === kind && deciding) return setQueued({ skip });
     setStep("planning");
     setPlanKind(as);
-    if (as === "code") return void planner.start("/api/plan", { brief, answers: "", kind: "code" }, (id) => `/p/${id}`);
+    if (as === "code") return void planner.start("/api/plan", { brief, answers: "", kind: "code", look: codeLook }, (id) => `/p/${id}`);
     const all = conn ? { ...answers, [conn.question.id]: picked.join(", ") } : answers;
-    void planner.start("/api/plan", { brief, answers: skip ? "" : renderAnswers(questions, all), kind: "business", ...(skip || !conn ? {} : { connections: picked }) }, (id) => `/p/${id}`);
+    void planner.start("/api/plan", { brief, answers: skip ? "" : renderAnswers(questions, all), kind: "business", look: businessLook, ...(skip || !conn ? {} : { connections: picked }) }, (id) => `/p/${id}`);
   }
 
   const toDescribe = () => {
@@ -341,6 +346,28 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
               </div>
             </div>
             )}
+
+            <div className="border-t border-dashed border-hairline-hi px-5 py-6 sm:px-8">
+              <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                <h2 className="font-pencil text-section">Pick a look</h2>
+                <p className="text-meta text-faint">{kind === "code" ? "Change it later with a note" : "Switch any time, free"}</p>
+              </div>
+              <p className="mt-2 text-body text-muted-foreground">
+                {kind === "code"
+                  ? "The style Prod AI writes your app in: colours, type, corners and the ground it sits on. Or let it design one just for your idea."
+                  : "The style of your app: colours, type, corners and the ground it sits on. Your brand colour stays your own in every look."}
+              </p>
+              <div role="group" aria-label="Look" className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
+                {(kind === "code" ? (["auto", ...LOOK_IDS] as CodeLook[]) : LOOK_IDS).map((l) => (
+                  <LookCard
+                    key={l}
+                    look={l}
+                    on={(kind === "code" ? codeLook : businessLook) === l}
+                    onPick={(next) => (kind === "code" ? setCodeLook(next) : next !== "auto" && setBusinessLook(next))}
+                  />
+                ))}
+              </div>
+            </div>
 
             <div className="flex flex-wrap items-center gap-3 border-t border-dashed border-hairline-hi px-5 py-4 sm:px-8">
               {kind === "code" ? (

@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Architects_Daughter, Caveat, Hanken_Grotesk, JetBrains_Mono } from "next/font/google";
+import { Archivo, Architects_Daughter, Caveat, Hanken_Grotesk, JetBrains_Mono, Newsreader, Nunito } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Providers } from "@/components/providers";
@@ -11,6 +11,10 @@ const pencil = Caveat({ variable: "--font-pencil", subsets: ["latin"] });
 const sketch = Architects_Daughter({ variable: "--font-sketch", subsets: ["latin"], weight: "400" });
 const sans = Hanken_Grotesk({ variable: "--font-work", subsets: ["latin"] });
 const mono = JetBrains_Mono({ variable: "--font-code", subsets: ["latin"] });
+// The faces some looks give the apps people make (lib/looks.ts). Not preloaded: a browser fetches one only when an app wears its look.
+const lookSerif = Newsreader({ variable: "--font-look-serif", subsets: ["latin"], preload: false });
+const lookRound = Nunito({ variable: "--font-look-round", subsets: ["latin"], preload: false });
+const lookGrotesk = Archivo({ variable: "--font-look-grotesk", subsets: ["latin"], preload: false });
 
 export const metadata: Metadata = {
   title: { default: "Prod AI: agentic apps you'd trust in production", template: "%s · Prod AI" },
@@ -25,7 +29,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${pencil.variable} ${sketch.variable} ${sans.variable} ${mono.variable} h-full antialiased`}
+      className={`${pencil.variable} ${sketch.variable} ${sans.variable} ${mono.variable} ${lookSerif.variable} ${lookRound.variable} ${lookGrotesk.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full">

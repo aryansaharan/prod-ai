@@ -1,5 +1,6 @@
 import { sortPhrase, type Block, type Blueprint } from "@/lib/blueprint/schema";
 import { list, PERMISSION_LABEL, SUPERVISION_LABEL } from "@/lib/blueprint/describe";
+import { lookOf } from "@/lib/looks";
 
 /**
  * A Work Order may only promise what its operations do. The model writes the summary and rationale,
@@ -131,7 +132,8 @@ export function describeChanges(before: Blueprint, after: Blueprint): string[] {
 
   if (before.meta.name !== after.meta.name) out.push(`renames the app to “${after.meta.name}”`);
   if (before.meta.theme.primary !== after.meta.theme.primary) out.push(`changes the brand colour to ${after.meta.theme.primary}`);
-  if (before.meta.theme.radius !== after.meta.theme.radius || before.meta.theme.density !== after.meta.theme.density) out.push("changes the app's look");
+  if (lookOf(before.meta.theme.look).id !== lookOf(after.meta.theme.look).id) out.push(`switches the app to the ${lookOf(after.meta.theme.look).name} look`);
+  if (before.meta.theme.radius !== after.meta.theme.radius || before.meta.theme.density !== after.meta.theme.density) out.push("changes the app's corners and spacing");
 
   for (const s of after.screens) {
     const was = before.screens.find((x) => x.id === s.id);

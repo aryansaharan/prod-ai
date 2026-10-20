@@ -22,7 +22,7 @@ Given a request and a scope, return the smallest set of typed edits that fully d
 - Filter menus ("let me filter by priority"): addFilters. A table can't hide rows by default; people pick the filter value.
 - "Ask before", "needs approval", "don't let it … without asking": permissions with permission "ask". "Just do it": "auto". "Tell me": "log". Name each tool, or use "*" or "irreversible".
 - New page or view: newScreens (pick the entity it shows and, if useful, the agent people talk to there).
-- Rules for how an agent behaves: rules. Test cases: rehearsals. Look and feel: theme (hex colours only).
+- Rules for how an agent behaves: rules. Test cases: rehearsals. Look and feel: theme (primary is a hex colour; look is the whole style: "make it dark" is midnight, "warmer" or "editorial" is paper, "rounded" or "playful" is soft, "minimal" or "monochrome" is mono, "loud" or "brutalist" is bold).
 - Use ids or exact visible names from the blueprint map. Never invent ids for existing objects.
 - Use patches only when no typed edit fits.
 - If the message is a question about the project (not a change), set isQuestion=true and feasible=false, answer it in rationale in one or two plain sentences (name permissions as people see them: Just do it, Tell me, Ask first; supervision as On its own, Spot-check, Approve everything; never raw values like auto, log, ask or approve_all), and suggest one change they could ask for. Put that suggestion in summary, phrased as a request.

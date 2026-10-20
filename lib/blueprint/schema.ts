@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { LOOK_IDS } from "@/lib/looks";
 
 /**
  * The longest text a plan keeps in a few fields: room for any real plan, small enough that a plan written
@@ -337,6 +338,8 @@ export const BlueprintSchema = z.object({
       radius: z.enum(["sm", "md", "lg"]),
       density: z.enum(["compact", "comfortable"]),
       mode: z.enum(["light", "dark"]).default("light"),
+      /** The app's whole style (lib/looks.ts): neutrals, type, corners and ground. Plans from before looks are Clean. */
+      look: z.enum(LOOK_IDS).default("clean"),
     }),
     auth: z.object({ enabled: z.boolean(), providers: z.array(z.enum(["google", "email", "sso"])) }),
     region: z.enum(["us", "eu", "in"]),

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { lookOf } from "@/lib/looks";
 import { getSessionUser } from "@/lib/auth";
 import { loadSiteOnce, roleFor } from "@/lib/apps/access";
 import { liveView } from "@/lib/apps/live";
@@ -53,7 +54,7 @@ export default async function LivePage(props: PageProps<"/live/[slug]">) {
   }
   const view = await liveView(s, await roleFor(s, user));
   const viewer: LiveViewer = { signedIn: Boolean(user), guest: Boolean(user?.isAnonymous), email: user && !user.isAnonymous ? user.email : null, name: user?.name ?? "Visitor" };
-  const app = { name: view.bp.meta.name, primary: view.bp.meta.theme.primary };
+  const app = { name: view.bp.meta.name, primary: view.bp.meta.theme.primary, look: lookOf(view.bp.meta.theme.look).id };
   return (
     <LiveApp
       app={app}

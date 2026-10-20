@@ -4,8 +4,11 @@ One idea holds the product together: **what people write is in pencil, what Prod
 A plan is a pencil sketch on paper, the build inks it in, and the real app appears in its own clean theme
 on the same sheet. Every screen, including the ones under the hood, is the same sheet of paper.
 
-The generated apps (`components/renderer/*`) use their own slate theme on purpose. These rules cover
-everything around them.
+The generated apps (`components/renderer/*`) use their own theme on purpose, in one of six **looks**
+(`lib/looks.ts`): Clean, Paper, Midnight, Soft, Mono and Bold. A look re-points the renderer's slate neutrals,
+type, corners and ground under `[data-look]` in `app/globals.css`; the brand colour stays the person's own.
+People pick a look on /new and switch it from the Look tray on the Sheet (or with a note like "make it dark");
+a code app is written to its look, or Prod AI designs one for the idea. These rules cover everything around them.
 
 ## Logo
 

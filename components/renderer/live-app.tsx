@@ -8,6 +8,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { createClient } from "@/lib/supabase/client";
 import { SampleBanner, UndoToast, useLiveData, type ClientView } from "./live-data";
 import { accentFor, SpecApp } from "./spec-app";
+import type { LookId } from "@/lib/looks";
 import { HelperAccessProvider } from "./helper-context";
 
 const REASONS = [
@@ -81,7 +82,7 @@ function ReportLink({ slug }: { slug: string }) {
 export type LiveViewer = { signedIn: boolean; guest: boolean; email: string | null; name: string };
 
 /** A private app's front door, in the app's own look: its name, that it's private, and how to get in. */
-function PrivateWall({ app, slug, viewer }: { app: { name: string; primary: string }; slug: string; viewer: LiveViewer }) {
+function PrivateWall({ app, slug, viewer }: { app: { name: string; primary: string; look?: LookId }; slug: string; viewer: LiveViewer }) {
   const router = useRouter();
   const [leaving, setLeaving] = useState(false);
   const accent = accentFor(app.primary, app.name);
@@ -143,12 +144,12 @@ function LiveScreens({ slug, view, viewer, device }: { slug: string; view: Clien
   );
 }
 
-export function LiveApp({ app, view, viewer, publishedAt, slug }: { app: { name: string; primary: string }; view: ClientView | null; viewer: LiveViewer; publishedAt: string; slug: string }) {
+export function LiveApp({ app, view, viewer, publishedAt, slug }: { app: { name: string; primary: string; look?: LookId }; view: ClientView | null; viewer: LiveViewer; publishedAt: string; slug: string }) {
   const [device, setDevice] = useState<"desktop" | "phone">("desktop");
   const visitor = view?.role === "visitor";
   // The date is formatted in UTC so the server and every visitor's browser render the same text (no hydration mismatch).
   return (
-    <div data-crisp className="flex h-dvh flex-col bg-slate-50">
+    <div data-crisp data-look={app.look ?? "clean"} className="flex h-dvh flex-col bg-slate-50">
       {view ? <LiveScreens slug={slug} view={view} viewer={viewer} device={device} /> : <PrivateWall app={app} slug={slug} viewer={viewer} />}
       {/* Wraps onto a second line on a phone rather than pushing the page sideways; the date gives way first. */}
       <div className="flex flex-wrap items-center gap-x-3 gap-y-1 border-t border-slate-200 bg-white px-3 py-1.5 text-[11.5px] text-slate-500 sm:px-4">

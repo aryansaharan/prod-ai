@@ -7,9 +7,12 @@ import { cn } from "@/lib/utils";
 import { AppContext, type AppCtx, type AppMode, type AskFrom, type LiveData } from "./app-context";
 import { RenderBlock } from "./blocks";
 import { accentFor } from "./theme";
+import { lookOf, type LookId } from "@/lib/looks";
 import { AskHelperDialog, type AskRequest } from "./chat-block";
 
 const RADIUS = { sm: "4px", md: "8px", lg: "12px" } as const;
+/** Some looks set their own corners; the others keep the plan's radius. */
+const LOOK_RADIUS: Partial<Record<LookId, string>> = { soft: "16px", mono: "0px", bold: "6px" };
 /** Below this frame width the agent chat folds into a drawer and the sidebar into an icon rail, so tables keep their columns. */
 export const ROOMY_WIDTH = 1200;
 
@@ -40,6 +43,7 @@ export function SpecApp({
   navMarks,
   data,
   viewer: liveViewer,
+  look: lookOverride,
 }: {
   bp: Blueprint;
   mode: AppMode;
@@ -55,6 +59,8 @@ export function SpecApp({
   data?: LiveData;
   /** Who is using a published app, for the sidebar. */
   viewer?: { name: string; initials: string; note: string };
+  /** Show the app in this look instead of its own (the look tray, while choosing). */
+  look?: LookId;
 }) {
   const [internalScreen, setInternalScreen] = useState(bp.screens[0]?.id);
   const screenId = controlledScreen && bp.screens.some((s) => s.id === controlledScreen) ? controlledScreen : internalScreen && bp.screens.some((s) => s.id === internalScreen) ? internalScreen : bp.screens[0].id;
@@ -164,7 +170,8 @@ export function SpecApp({
 
   const theme = bp.meta.theme;
   const accent = accentFor(theme.primary, bp.meta.name);
-  const style = { "--app-primary": theme.primary, "--app-accent": accent, "--app-radius": RADIUS[theme.radius] } as React.CSSProperties;
+  const look = lookOverride ?? lookOf(theme.look).id;
+  const style = { "--app-primary": theme.primary, "--app-accent": accent, "--app-radius": LOOK_RADIUS[look] ?? RADIUS[theme.radius] } as React.CSSProperties;
   // Layout by purpose: a record screen leads back to the list it was opened from. Every block the
   // blueprint holds is shown, so a change that adds headline numbers to a record screen is never hidden.
   const purpose = screenPurpose(screen);
@@ -193,7 +200,7 @@ export function SpecApp({
 
   return (
     <AppContext.Provider value={ctx}>
-      <div ref={rootRef} className={cn("relative flex h-full min-h-0 overflow-hidden bg-slate-50 font-sans text-slate-900 antialiased", phone && "app-phone flex-col", theme.density === "compact" && "text-[13px]")} style={style}>
+      <div ref={rootRef} data-look={look} className={cn("relative flex h-full min-h-0 overflow-hidden bg-slate-50 font-sans text-slate-900 antialiased", phone && "app-phone flex-col", theme.density === "compact" && "text-[13px]")} style={style}>
         {!phone && (
           <aside className={cn("flex shrink-0 flex-col border-r border-slate-200 bg-white transition-[width] duration-300", compact ? "w-[60px]" : "w-[220px]")}>
             <div className={cn("flex items-center gap-2.5 py-4", compact ? "justify-center px-2" : "px-4")}>
@@ -246,7 +253,7 @@ export function SpecApp({
           {!phone && (
             <header className={cn("flex items-center gap-3 border-b border-slate-200 bg-white py-3", narrow ? "px-3" : "px-6")}>
               {!backTo && !narrow && (
-                <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-[var(--app-radius)]" style={{ background: "color-mix(in oklab, var(--app-accent) 11%, white)", color: "var(--app-accent)" }}>
+                <span aria-hidden className="grid size-9 shrink-0 place-items-center rounded-[var(--app-radius)]" style={{ background: "color-mix(in oklab, var(--app-accent) 11%, var(--color-white))", color: "var(--app-accent)" }}>
                   <DynamicIcon name={screen.icon} className="size-[18px]" />
                 </span>
               )}
@@ -335,7 +342,7 @@ function NavItem({ s, active, onClick, iconOnly = false, marks }: { s: Screen; a
       aria-label={iconOnly ? `${s.title}${marks ? `, ${marks} open comment${marks === 1 ? "" : "s"}` : ""}` : undefined}
       title={iconOnly ? s.title : undefined}
       className={cn("relative flex w-full items-center gap-2.5 rounded-lg py-2 text-left text-[13px] transition-colors", iconOnly ? "justify-center px-0" : "px-2.5", active ? "font-medium" : "text-slate-600 hover:bg-slate-50")}
-      style={active ? { background: "color-mix(in oklab, var(--app-primary) 10%, white)", color: "var(--app-primary)" } : undefined}
+      style={active ? { background: "color-mix(in oklab, var(--app-primary) 10%, var(--color-white))", color: "var(--app-primary)" } : undefined}
     >
       <DynamicIcon name={s.icon} className="size-4 shrink-0" />
       {!iconOnly && <span className="min-w-0 flex-1 truncate">{s.title}</span>}

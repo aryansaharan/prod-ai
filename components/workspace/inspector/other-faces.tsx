@@ -16,6 +16,7 @@ import { allBlocks, BLOCK_LABELS, blockTitle, relations } from "@/lib/blueprint"
 import { connectionSummary, entitySummary, list, screenSummary, signInMethods } from "@/lib/blueprint/describe";
 import { formatValue } from "@/lib/format";
 import { setConnectionStatus, setTheme, updateScreenText } from "@/lib/actions/blueprint";
+import { LOOK_LIST, lookOf, type LookId } from "@/lib/looks";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "../context";
 import { Section } from "./agent-faces";
@@ -298,9 +299,19 @@ export function BriefSpec() {
   const ws = useWorkspace();
   const { pending, run } = useSave();
   const [primary, setPrimary] = useState(ws.blueprint.meta.theme.primary);
+  const [look, setLook] = useState<LookId>(lookOf(ws.blueprint.meta.theme.look).id);
   const swatches = ["#0F766E", "#4F46E5", "#0369A1", "#7C3AED", "#B45309", "#BE123C", "#111827"];
   return (
     <div>
+      <Section title="Look of the app">
+        <div className="flex flex-wrap gap-1.5" role="group" aria-label="Look">
+          {LOOK_LIST.map((l) => (
+            <button key={l.id} type="button" aria-pressed={look === l.id} title={l.line} onClick={() => { setLook(l.id); run(() => setTheme(ws.project.id, { look: l.id }), `${l.name} look`); }} className={cn("h-7 rounded-md px-2.5 text-ui transition-colors duration-150", look === l.id ? "bg-brand-soft text-brand ring-1 ring-brand/30" : "text-muted-foreground ring-1 ring-foreground/10 hover:text-foreground")}>
+              {l.name}
+            </button>
+          ))}
+        </div>
+      </Section>
       <Section title="Brand colour of the app">
         <div className="flex flex-wrap gap-2">
           {swatches.map((c) => (

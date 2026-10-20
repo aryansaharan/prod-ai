@@ -9,12 +9,12 @@ import type { HistoryEntry } from "@/lib/apps/records";
 import { ChatBlockView } from "./chat-block";
 import { deriveKpi, screenEntityId } from "./kpi";
 
-const primaryBtn = "inline-flex h-8 items-center gap-1.5 rounded-[var(--app-radius)] px-3 text-[13px] font-medium text-white shadow-sm transition-opacity hover:opacity-90";
-const secondaryBtn = "inline-flex h-8 items-center gap-1.5 rounded-[var(--app-radius)] border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-700 shadow-sm hover:bg-slate-50";
+const primaryBtn = "app-btn-primary inline-flex h-8 items-center gap-1.5 rounded-[var(--app-radius)] px-3 text-[13px] font-medium text-white shadow-sm transition-opacity hover:opacity-90";
+const secondaryBtn = "app-btn inline-flex h-8 items-center gap-1.5 rounded-[var(--app-radius)] border border-slate-200 bg-white px-3 text-[13px] font-medium text-slate-700 shadow-sm hover:bg-slate-50";
 
 export function Card({ title, children, className, right }: { title?: string; children: React.ReactNode; className?: string; right?: React.ReactNode }) {
   return (
-    <section className={cn("rounded-[calc(var(--app-radius)+4px)] border border-slate-200 bg-white shadow-[0_1px_2px_rgb(15_23_42/0.04)]", className)}>
+    <section className={cn("app-card rounded-[calc(var(--app-radius)+4px)] border border-slate-200 bg-white shadow-[0_1px_2px_rgb(15_23_42/0.04)]", className)}>
       {(title || right) && (
         // Wraps instead of overflowing, so filters and search never push a narrow card (phone, side column) wider than its frame.
         <header className="flex flex-wrap items-center gap-x-3 gap-y-2 border-b border-slate-100 px-4 py-3">
@@ -77,13 +77,13 @@ export function KpisBlock({ block }: { block: Extract<Block, { type: "kpis" }> }
   return (
     <div className="grid grid-cols-2 gap-3 lg:grid-cols-4 [.app-phone_&]:grid-cols-2">
       {items.map((k, i) => (
-        <div key={i} className="rounded-[calc(var(--app-radius)+4px)] border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgb(15_23_42/0.04)]">
+        <div key={i} className="app-card rounded-[calc(var(--app-radius)+4px)] border border-slate-200 bg-white p-4 shadow-[0_1px_2px_rgb(15_23_42/0.04)]">
           <p className="text-[12.5px] text-slate-500">{k.label}</p>
           {uncounted(k) ? (
             <p className="mt-2.5 text-[13px] text-slate-400" title="This number isn't worked out from the app's records yet">Not counted yet</p>
           ) : (
             <>
-              <p className="mt-1.5 text-[22px] font-semibold tracking-tight text-slate-900 tabular-nums" title={k.derived ? "Counted from the records in this app" : undefined}>{k.value}</p>
+              <p className="app-figure mt-1.5 text-[22px] font-semibold tracking-tight text-slate-900 tabular-nums" title={k.derived ? "Counted from the records in this app" : undefined}>{k.value}</p>
               {k.delta && <p className={cn("mt-0.5 text-[12px]", k.tone === "good" ? "text-emerald-600" : k.tone === "bad" ? "text-rose-600" : "text-slate-500")}>{k.delta}</p>}
               {!k.delta && k.tone === "bad" && !k.zero && <p className="mt-0.5 text-[12px] text-rose-600">Needs attention</p>}
             </>
@@ -262,7 +262,7 @@ export function ListBlock({ block }: { block: Extract<Block, { type: "list" }> }
           return (
             <li key={i}>
               <Row {...(clickable ? { type: "button" as const, onClick: () => run(block.onSelect, { blockId: block.id, rowIndex: i, entityId: block.entityId }) } : {})} className={cn("flex w-full items-center gap-3 px-4 py-2.5 text-left", clickable && "hover:bg-slate-50")}>
-                <span className="grid size-8 shrink-0 place-items-center rounded-full text-[12px] font-semibold" style={{ background: "color-mix(in oklab, var(--app-primary) 12%, white)", color: "var(--app-primary)" }}>
+                <span className="grid size-8 shrink-0 place-items-center rounded-full text-[12px] font-semibold" style={{ background: "color-mix(in oklab, var(--app-primary) 12%, var(--color-white))", color: "var(--app-primary)" }}>
                   {title.split(/\s+/).slice(0, 2).map((w) => w[0]).join("").toUpperCase()}
                 </span>
                 <span className="min-w-0 flex-1">

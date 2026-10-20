@@ -1,5 +1,6 @@
 import "server-only";
 import { createHash } from "node:crypto";
+import type { CodeLook } from "@/lib/looks";
 import { Output, streamText } from "ai";
 import type { SessionUser } from "@/lib/auth";
 import type { Supa } from "@/lib/supabase/server";
@@ -467,7 +468,7 @@ export function dataWords(m: Manifest): string {
  * valid one: one screen pointing at the code, one data type listing its files, and one note in place of
  * an AI helper. Business screens never show it; it exists so every read of a project keeps working.
  */
-export function codePlaceholderBlueprint(app: CodeApp): Blueprint {
+export function codePlaceholderBlueprint(app: CodeApp, look: CodeLook = "auto"): Blueprint {
   const { title, tagline, kind } = app.manifest;
   return {
     version: 1,
@@ -476,7 +477,7 @@ export function codePlaceholderBlueprint(app: CodeApp): Blueprint {
       tagline: tagline || title,
       vertical: "custom",
       plain: `${kind || "An app"}, written by Prod AI as real code.`,
-      theme: { primary: "#0F766E", radius: "md", density: "comfortable", mode: "light" },
+      theme: { primary: "#0F766E", radius: "md", density: "comfortable", mode: "light", look: look === "auto" ? "clean" : look },
       auth: { enabled: false, providers: [] },
       region: "us",
     },
@@ -549,8 +550,8 @@ function refusal(message: string, code: string, actions: CodeAction[]): Response
  * metered the moment it returns (failures too), so the budget hold can be released before a fix is held.
  * Guests and people without the credits get no model: they're told plainly and offered a business starter.
  */
-export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief: string; answers: string }): Promise<Response> {
-  const { user, supa, brief, answers } = p;
+export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief: string; answers: string; look?: CodeLook }): Promise<Response> {
+  const { user, supa, brief, answers, look = "auto" } = p;
   if (user.isAnonymous)
     return refusal(
       `Writing an app as real code takes ${PRICE.codeApp} credits. Sign in to get ${monthlyAllowance(false)} free credits a month, or start from a business starter now, free.`,
@@ -560,7 +561,7 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
   const m = getModel();
   if (!m) return refusal("Writing an app as real code needs live AI, which isn't set up here. You can start from a business starter, free.", "code-unavailable", [BUSINESS_ACTION]);
 
-  const prompt = writePrompt(brief, answers);
+  const prompt = writePrompt(brief, answers, look);
   // The hold covers the worst case of the write itself; a fix, if one is needed, is held on its own after the write is metered.
   const hold = await holdModelBudget(user, "plan", promptHoldUsd(WRITE_INSTRUCTIONS.length + prompt.length, WRITE_MAX_OUTPUT));
   if (!hold.ok && hold.reason === "rate") return Response.json({ error: "That's a lot of apps in a few minutes. Wait a little, then try again." }, { status: 429 });
@@ -646,7 +647,7 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
 
         let projectId: string | null = null;
         try {
-          const project = await createProject(supa, { ownerId: user.id, name: app.manifest.title, vertical: "custom", brief, blueprint: codePlaceholderBlueprint(app), buildState: "draft", kind: "code", code: app });
+          const project = await createProject(supa, { ownerId: user.id, name: app.manifest.title, vertical: "custom", brief, blueprint: codePlaceholderBlueprint(app, look), buildState: "draft", kind: "code", code: app });
           projectId = project.id;
           const cp = await addCheckpoint(supa, project.id, {
             label: "Written by Prod AI",
