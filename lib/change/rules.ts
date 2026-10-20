@@ -3,6 +3,7 @@ import { findBlock } from "@/lib/blueprint";
 import { presetPermission } from "@/lib/blueprint/describe";
 import type { ChangeOperation } from "@/lib/db/types";
 import { rankOrder } from "./edits";
+import { LOOKS, lookFromWords } from "@/lib/looks";
 
 type RuleResult = { summary: string; rationale: string; operations: ChangeOperation[] };
 
@@ -111,6 +112,14 @@ export function ruleProposal(bp: Blueprint, request: string, scope: ObjectRef | 
   const text = request.trim();
   const lower = text.toLowerCase();
   const none: RuleResult = { summary: "", rationale: "", operations: [] };
+
+  // The whole look: "make it dark", "try the paper look". "Make it dark blue" is a colour, not a look.
+  const look = lookFromWords(lower);
+  const named = look !== null && new RegExp(`\\b${look}\\b`).test(lower);
+  const saysColour = Object.keys(COLOURS).some((c) => new RegExp(`\\b${c}\\b`).test(lower)) || /#[0-9a-f]{6}\b/.test(lower);
+  if (look && look !== bp.meta.theme.look && (named || !saysColour)) {
+    return { summary: `Switch to the ${LOOKS[look].name} look`, rationale: `Restyles every screen: ${LOOKS[look].line.toLowerCase()}. Your brand colour stays.`, operations: [{ op: "set", path: "/meta/theme/look", value: look }] };
+  }
 
   // Theme colour: "make it blue", "use green as the brand colour"
   const colour = Object.keys(COLOURS).find((c) => new RegExp(`\\b${c}\\b`).test(lower));

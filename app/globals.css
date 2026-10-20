@@ -441,3 +441,268 @@ body:has([data-crisp])::before {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* =====================================================================================
+ * Looks: the style of an app people make (lib/looks.ts). The renderer draws every app in Tailwind's
+ * slate neutrals; each look re-points those neutrals, the card colour, the type, the corners and the
+ * ground under [data-look], so a whole app changes style without a line of its markup changing.
+ * The brand colour (--app-primary) stays the person's own in every look. Clean is the renderer as it was.
+ * ===================================================================================== */
+[data-look] {
+  transition: background-color 450ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-look] :is(h1, h3) {
+  font-family: var(--look-heading, inherit);
+}
+
+/* Paper: an ivory page, warm ink, a serif for headings, a faint grain. */
+[data-look="paper"] {
+  --color-slate-50: #f7f3ea;
+  --color-slate-100: #efe9dc;
+  --color-slate-200: #e3dccd;
+  --color-slate-300: #cfc6b4;
+  --color-slate-400: #a39a88;
+  --color-slate-500: #7c7464;
+  --color-slate-600: #5f584b;
+  --color-slate-700: #474135;
+  --color-slate-800: #2f2a22;
+  --color-slate-900: #1f1b15;
+  --color-slate-950: #120f0b;
+  --color-white: #fffdf8;
+  --look-heading: var(--font-look-serif), Georgia, serif;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .36 0 0 0 0 .29 0 0 0 0 .18 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+[data-look="paper"] :is(h1, h3) {
+  font-weight: 600;
+  letter-spacing: -0.005em;
+}
+[data-look="paper"] :is(.rounded-lg, .rounded-xl, .rounded-2xl) {
+  border-radius: 8px;
+}
+[data-look="paper"] .app-figure {
+  font-family: var(--font-look-serif), Georgia, serif;
+  font-size: 27px;
+  font-weight: 500;
+}
+
+/* Midnight: a dark navy ground lit by two soft glows of the app's own colours. */
+[data-look="midnight"] {
+  color-scheme: dark;
+  --color-slate-50: #0b0e17;
+  --color-slate-100: #161c2b;
+  --color-slate-200: #232b3d;
+  --color-slate-300: #323c52;
+  --color-slate-400: #66708a;
+  --color-slate-500: #8b94ab;
+  --color-slate-600: #a9b1c6;
+  --color-slate-700: #c7cddc;
+  --color-slate-800: #e2e6ef;
+  --color-slate-900: #f3f5fa;
+  --color-slate-950: #ffffff;
+  --color-white: rgb(17 22 36 / 0.74);
+  /* Status tints, turned for a dark ground. */
+  --color-rose-50: #2a1520;
+  --color-rose-200: #5c2333;
+  --color-rose-400: #fb7185;
+  --color-rose-600: #fda4af;
+  --color-rose-700: #fda4af;
+  --color-amber-50: #2a2010;
+  --color-amber-100: #3a2c12;
+  --color-amber-200: #5e4716;
+  --color-amber-300: #7a5b17;
+  --color-amber-600: #fcd34d;
+  --color-amber-700: #fcd34d;
+  --color-amber-800: #fde68a;
+  --color-amber-900: #fef3c7;
+  --color-emerald-50: #0f2a20;
+  --color-emerald-200: #1c4f3b;
+  --color-emerald-600: #6ee7b7;
+  --color-emerald-700: #6ee7b7;
+  --color-sky-50: #0e2533;
+  --color-sky-200: #164a63;
+  --color-sky-700: #7dd3fc;
+  --color-violet-50: #1f1838;
+  --color-violet-200: #3c2f6b;
+  --color-violet-700: #c4b5fd;
+  --color-teal-50: #0d2a2a;
+  --color-teal-200: #17504f;
+  --color-teal-700: #5eead4;
+  --color-indigo-50: #191d3d;
+  --color-indigo-200: #2f3775;
+  --color-indigo-700: #a5b4fc;
+  --color-blue-600: #93c5fd;
+  background-image:
+    radial-gradient(1000px 520px at 80% 6%, color-mix(in oklab, var(--app-primary) 36%, transparent), transparent 70%),
+    radial-gradient(760px 420px at 4% 104%, color-mix(in oklab, var(--app-accent) 28%, transparent), transparent 70%);
+}
+[data-look="midnight"] .app-card {
+  backdrop-filter: blur(10px) saturate(1.2);
+  border-color: rgb(255 255 255 / 0.07);
+}
+/* White text stays white on brand-coloured buttons; only white surfaces turn dark. */
+[data-look="midnight"] .text-white {
+  color: #fff;
+}
+[data-look="midnight"] :is(.shadow-sm, .shadow, .shadow-md, .shadow-lg, .shadow-xl) {
+  --tw-shadow: 0 12px 32px -12px rgb(0 0 0 / 0.65), 0 0 0 1px rgb(255 255 255 / 0.03);
+}
+
+/* Soft: lavender neutrals, rounded type, big corners, blurred blobs of colour. */
+[data-look="soft"] {
+  --color-slate-50: #f6f4fb;
+  --color-slate-100: #eeebf6;
+  --color-slate-200: #e3def0;
+  --color-slate-300: #cdc6e0;
+  --color-slate-400: #a29bb8;
+  --color-slate-500: #7d7694;
+  --color-slate-600: #5f5975;
+  --color-slate-700: #48435c;
+  --color-slate-800: #2f2b40;
+  --color-slate-900: #221f31;
+  --color-slate-950: #141220;
+  --font-work: var(--font-look-round), ui-rounded, system-ui, sans-serif;
+  --look-heading: var(--font-look-round), ui-rounded, system-ui, sans-serif;
+  background-image:
+    radial-gradient(520px 360px at 92% 4%, color-mix(in oklab, var(--app-primary) 16%, transparent), transparent 70%),
+    radial-gradient(480px 340px at 6% 96%, color-mix(in oklab, var(--app-accent) 14%, transparent), transparent 70%);
+}
+[data-look="soft"] :is(h1, h3) {
+  font-weight: 800;
+}
+[data-look="soft"] .rounded-md {
+  border-radius: 12px;
+}
+[data-look="soft"] .rounded-lg {
+  border-radius: 16px;
+}
+[data-look="soft"] :is(.rounded-xl, .rounded-2xl) {
+  border-radius: 22px;
+}
+[data-look="soft"] :is(.shadow-sm, .shadow, .shadow-md, .shadow-lg, .shadow-xl) {
+  --tw-shadow: 0 14px 34px -16px rgb(76 54 140 / 0.28);
+}
+[data-look="soft"] :is(.app-card, :is(.rounded-xl, .rounded-2xl).border) {
+  border-color: transparent;
+  box-shadow: 0 12px 32px -18px rgb(76 54 140 / 0.38), 0 0 0 1px rgb(76 54 140 / 0.06);
+}
+[data-look="soft"] :is(.app-btn, .app-btn-primary) {
+  border-radius: 999px;
+  padding-inline: 14px;
+}
+[data-look="soft"] .app-figure {
+  font-weight: 800;
+}
+
+/* Mono: black, white and greys, a mono face for headings, sharp corners, a faint grid. */
+[data-look="mono"] {
+  --color-slate-50: #fafafa;
+  --color-slate-100: #f2f2f2;
+  --color-slate-200: #e4e4e4;
+  --color-slate-300: #cfcfcf;
+  --color-slate-400: #9a9a9a;
+  --color-slate-500: #6e6e6e;
+  --color-slate-600: #525252;
+  --color-slate-700: #3a3a3a;
+  --color-slate-800: #232323;
+  --color-slate-900: #111111;
+  --color-slate-950: #000000;
+  --look-heading: var(--font-code), ui-monospace, monospace;
+  background-image: linear-gradient(#ececec 1px, transparent 1px), linear-gradient(90deg, #ececec 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+[data-look="mono"] :is(h1, h3) {
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+[data-look="mono"] :is(.rounded, .rounded-md, .rounded-lg, .rounded-xl, .rounded-2xl) {
+  border-radius: 2px;
+}
+[data-look="mono"] :is(.shadow-sm, .shadow, .shadow-md, .shadow-lg, .shadow-xl) {
+  --tw-shadow: 0 0 #0000;
+}
+[data-look="mono"] :is(.app-card, :is(.rounded-xl, .rounded-2xl).border) {
+  border-color: var(--color-slate-900);
+  border-radius: 2px;
+}
+[data-look="mono"] .app-figure {
+  font-family: var(--font-code), ui-monospace, monospace;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+/* Bold: a cream page, thick black lines, hard offset shadows, a heavy grotesk. */
+[data-look="bold"] {
+  --color-slate-50: #fbf6e9;
+  --color-slate-100: #f3ecd8;
+  --color-slate-200: #e6dcc0;
+  --color-slate-300: #d1c4a0;
+  --color-slate-400: #9c8f6c;
+  --color-slate-500: #6f6449;
+  --color-slate-600: #4e4532;
+  --color-slate-700: #352e20;
+  --color-slate-800: #1f1a10;
+  --color-slate-900: #14110a;
+  --color-slate-950: #000000;
+  --color-white: #fffdf5;
+  --font-work: var(--font-look-grotesk), system-ui, sans-serif;
+  --look-heading: var(--font-look-grotesk), system-ui, sans-serif;
+  background-image: radial-gradient(rgb(20 17 10 / 0.14) 1px, transparent 1.2px);
+  background-size: 18px 18px;
+}
+[data-look="bold"] :is(h1, h3) {
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+[data-look="bold"] :is(.border, .border-b, .border-t, .border-l, .border-r):is(.border-slate-100, .border-slate-200, .border-slate-300) {
+  border-color: var(--color-slate-900);
+}
+[data-look="bold"] .border {
+  border-width: 2px;
+}
+[data-look="bold"] .border-b {
+  border-bottom-width: 2px;
+}
+[data-look="bold"] .border-r {
+  border-right-width: 2px;
+}
+[data-look="bold"] :is(.app-card, :is(.rounded-xl, .rounded-2xl).border),
+[data-look="bold"] :is(.shadow-sm, .shadow, .shadow-md, .shadow-lg, .shadow-xl) {
+  box-shadow: 4px 4px 0 0 var(--color-slate-900);
+}
+[data-look="bold"] :is(.app-btn, .app-btn-primary) {
+  border: 2px solid var(--color-slate-900);
+  box-shadow: 2px 2px 0 0 var(--color-slate-900);
+  font-weight: 700;
+}
+[data-look="bold"] .app-figure {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* The look tray: the chosen look inks across the app from the card that was pressed. */
+::view-transition-old(app-look),
+::view-transition-new(app-look) {
+  animation-duration: 700ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+::view-transition-old(app-look) {
+  animation-name: none;
+}
+::view-transition-new(app-look) {
+  animation-name: look-ink;
+}
+@keyframes look-ink {
+  from {
+    clip-path: circle(0 at var(--look-x, 50%) var(--look-y, 0%));
+  }
+  to {
+    clip-path: circle(150% at var(--look-x, 50%) var(--look-y, 0%));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-new(app-look) {
+    animation: none;
+  }
+}

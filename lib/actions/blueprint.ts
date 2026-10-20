@@ -10,6 +10,7 @@ import { estimate } from "@/lib/blueprint/estimate";
 import { findBlock } from "@/lib/blueprint";
 import { FRAMEWORK_LABEL, PERMISSION_LABEL } from "@/lib/blueprint/describe";
 import type { LedgerKind } from "@/lib/db/types";
+import { isLook, LOOKS, type LookId } from "@/lib/looks";
 
 type Result = { ok: true } | { ok: false; error: string };
 
@@ -146,11 +147,12 @@ export async function tweakBlock(projectId: string, blockId: string, patch: Bloc
   });
 }
 
-export async function setTheme(projectId: string, patch: { primary?: string; radius?: "sm" | "md" | "lg"; density?: "compact" | "comfortable"; mode?: "light" | "dark" }) {
+export async function setTheme(projectId: string, patch: { primary?: string; radius?: "sm" | "md" | "lg"; density?: "compact" | "comfortable"; mode?: "light" | "dark"; look?: LookId }) {
   return mutate(projectId, { type: "brief", id: "meta" }, (bp) => {
     if (patch.primary && !/^#[0-9a-fA-F]{6}$/.test(patch.primary)) throw new Error("Use a 6-digit hex colour");
+    if (patch.look !== undefined && !isLook(patch.look)) throw new Error("That isn't one of the looks");
     Object.assign(bp.meta.theme, patch);
-    return patch.primary ? `Changed the brand colour to ${patch.primary}` : "Changed the app's look";
+    return patch.primary ? `Changed the brand colour to ${patch.primary}` : patch.look ? `Switched the app to the ${LOOKS[patch.look].name} look` : "Changed the app's look";
   });
 }
 

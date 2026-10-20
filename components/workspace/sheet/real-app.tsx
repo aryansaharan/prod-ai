@@ -1,8 +1,10 @@
 "use client";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { flushSync } from "react-dom";
+import { toast } from "sonner";
 import Link from "next/link";
 import { motion } from "motion/react";
-import { ArrowUpRight, Monitor, MousePointerClick, NotebookPen, Play, Rocket, Smartphone, Tablet, X } from "lucide-react";
+import { ArrowUpRight, Monitor, MousePointerClick, NotebookPen, Palette, Play, Rocket, Smartphone, Tablet, X } from "lucide-react";
 import type { Block, ObjectRef, Screen } from "@/lib/blueprint/schema";
 import { SpecApp, type WrapBlock } from "@/components/renderer/spec-app";
 import { Button } from "@/components/ui/button";
@@ -13,6 +15,9 @@ import { useFirstShowing } from "@/components/motion/sheet-draw";
 import { PencilRadio } from "./pencil-radio";
 import { Pill } from "@/components/ui/pill";
 import { plural, reducedMotion, useSheet } from "./use-sheet";
+import { LookCard } from "@/components/looks/look-preview";
+import { setTheme } from "@/lib/actions/blueprint";
+import { LOOK_LIST, LOOKS, lookOf, type LookId } from "@/lib/looks";
 
 type Device = "desktop" | "tablet" | "phone";
 
@@ -95,6 +100,51 @@ export function RealApp({ justBuilt }: { justBuilt: boolean }) {
   const [pointing, setPointing] = useState(false);
   const [noted, setNoted] = useState<{ ref: ObjectRef; label: string } | null>(null);
   const heading = useRef<HTMLHeadingElement>(null);
+  const frame = useRef<HTMLDivElement>(null);
+
+  // The look tray. A pick shows at once (it inks across the app from the card that was pressed) and is
+  // saved a moment after the last pick, so trying all six makes one new version, not six.
+  const saved = lookOf(bp.meta.theme.look).id;
+  const [lookOpen, setLookOpen] = useState(false);
+  const [trying, setTrying] = useState<LookId | null>(null);
+  const look = trying ?? saved;
+  const pending = useRef<{ timer: ReturnType<typeof setTimeout>; look: LookId } | null>(null);
+  const saveLook = (next: LookId) => {
+    pending.current = null;
+    if (next === lookOf(bp.meta.theme.look).id) return setTrying(null);
+    void setTheme(ws.project.id, { look: next }).then((r) => {
+      if (r.ok) toast.success(`${LOOKS[next].name} look saved`, { description: "Every screen wears it now, and so will the published app." });
+      else {
+        setTrying(null);
+        toast.error("The look didn't save", { description: r.error });
+      }
+    });
+  };
+  // A save still waiting when the Sheet goes away is made then.
+  useEffect(() => () => {
+    if (pending.current) {
+      clearTimeout(pending.current.timer);
+      saveLook(pending.current.look);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  // Once the saved plan wears the look being tried, the try is over.
+  useEffect(() => {
+    if (trying && trying === saved && !pending.current) setTrying(null);
+  }, [saved, trying]);
+  const pickLook = (next: LookId, from: HTMLElement) => {
+    if (next === look) return;
+    const show = () => flushSync(() => setTrying(next));
+    const f = frame.current?.getBoundingClientRect();
+    const c = from.getBoundingClientRect();
+    const root = document.documentElement;
+    if (f && !reducedMotion() && typeof document.startViewTransition === "function") {
+      root.style.setProperty("--look-x", `${c.left + c.width / 2 - f.left}px`);
+      root.style.setProperty("--look-y", `${c.top + c.height / 2 - f.top}px`);
+      document.startViewTransition(show);
+    } else show();
+    if (pending.current) clearTimeout(pending.current.timer);
+    pending.current = { look: next, timer: setTimeout(() => saveLook(next), 1200) };
+  };
 
   const replay = ws.build.status === "done" && ws.build.mode === "replay";
   const version = (ws.checkpoints.find((c) => c.id === ws.project.currentCheckpointId) ?? ws.checkpoints.reduce<(typeof ws.checkpoints)[number] | null>((m, c) => (!m || c.seq > m.seq ? c : m), null))?.seq;
@@ -199,6 +249,15 @@ export function RealApp({ justBuilt }: { justBuilt: boolean }) {
             <MousePointerClick aria-hidden /> Point and write a note
             {pointing && <span aria-hidden className="text-brand/70">· Esc to stop</span>}
           </Button>
+          <Button
+            variant="outline"
+            aria-expanded={lookOpen}
+            aria-controls="look-tray"
+            onClick={() => setLookOpen((o) => !o)}
+            className={cn(lookOpen && "border-brand/30 bg-brand-soft text-brand ring-1 ring-brand/30 hover:border-brand/30 hover:bg-brand-soft hover:text-brand")}
+          >
+            <Palette aria-hidden /> Look · {LOOKS[look].name}
+          </Button>
           {!onPhone && (
           <PencilRadio<Device>
             label="Device"
@@ -213,6 +272,14 @@ export function RealApp({ justBuilt }: { justBuilt: boolean }) {
           )}
         </div>
       </div>
+
+      {lookOpen && (
+        <div id="look-tray" role="group" aria-label="Looks" className="fade-up -mx-1 mt-3 flex gap-2 overflow-x-auto px-1 pb-1">
+          {LOOK_LIST.map((l) => (
+            <LookCard key={l.id} look={l.id} accent={bp.meta.theme.primary} size="sm" on={look === l.id} onPick={(id, el) => id !== "auto" && pickLook(id, el)} />
+          ))}
+        </div>
+      )}
 
       <div className="mt-2 min-h-5 text-meta text-muted-foreground" role="status">
         {noted ? (
@@ -241,8 +308,9 @@ export function RealApp({ justBuilt }: { justBuilt: boolean }) {
         On a phone the app runs edge to edge across the paper, with no frame inside the phone.
       */}
       <div
+        ref={frame}
         className={cn(
-          "relative mt-2 flex min-w-0 flex-col overflow-clip",
+          "relative mt-2 flex min-w-0 flex-col overflow-clip [view-transition-name:app-look]",
           onPhone ? "-mx-3 border-y border-hairline" : "panel-raised mx-auto rounded-lg",
           // Change shape only when someone picks a device, not when the first paint settles on the one that fits.
           picked && !onPhone && "transition-[width] duration-250 ease-paper motion-reduce:transition-none",
@@ -275,7 +343,7 @@ export function RealApp({ justBuilt }: { justBuilt: boolean }) {
         <div className="min-h-0 min-w-0 flex-1 overflow-clip bg-raised">
           {/* On a phone the app draws a pretend status bar (9:41) at its top; the strip above already says what this is, so it sits out of view. */}
           <div className="h-full" style={device === "phone" ? { height: `calc(100% + ${PHONE_STATUS_BAR}px)`, marginTop: -PHONE_STATUS_BAR } : undefined}>
-            <SpecApp bp={bp} mode="preview" device={device} screenId={screen.id} onScreenChange={setScreenId} projectId={ws.project.id} wrapBlock={pointing ? wrap : undefined} />
+            <SpecApp bp={bp} mode="preview" device={device} screenId={screen.id} onScreenChange={setScreenId} projectId={ws.project.id} wrapBlock={pointing ? wrap : undefined} look={look} />
           </div>
         </div>
       </div>

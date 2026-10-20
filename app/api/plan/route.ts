@@ -12,6 +12,7 @@ import { estimate } from "@/lib/blueprint/estimate";
 import type { Blueprint } from "@/lib/blueprint/schema";
 import { asKind } from "@/lib/code-apps/kind";
 import { codePlanResponse } from "@/lib/code-apps/generate";
+import { isLook } from "@/lib/looks";
 
 // A business plan takes up to two minutes; a code app (Claude writing every file, and one fix if the checks ask) up to five.
 export const maxDuration = 300;
@@ -23,7 +24,9 @@ const count = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? on
 export async function POST(req: Request) {
   const user = await getSessionUser();
   if (!user) return Response.json({ error: "Sign in first" }, { status: 401 });
-  const body = (await req.json().catch(() => ({}))) as { brief?: unknown; answers?: unknown; connections?: unknown; kind?: unknown };
+  const body = (await req.json().catch(() => ({}))) as { brief?: unknown; answers?: unknown; connections?: unknown; kind?: unknown; look?: unknown };
+  // The look picked on /new: a business app wears it from the first save; a code app is written to it ("auto" leaves it to Prod AI).
+  const look = isLook(body.look) ? body.look : null;
   const brief = (typeof body.brief === "string" ? body.brief : "").trim().slice(0, 2000);
   if (brief.length < 8) return Response.json({ error: "Describe what you want in a sentence or two" }, { status: 400 });
   const answers = (typeof body.answers === "string" ? body.answers : "").slice(0, 600);
@@ -38,6 +41,7 @@ export async function POST(req: Request) {
   // app's own database is ready. The curated demo seed is not planned here, so it keeps its configured systems.
   const adjust = (bp: Blueprint): Blueprint => {
     let next = startNotConnected(bp);
+    if (look) next = { ...next, meta: { ...next.meta, theme: { ...next.meta.theme, look } } };
     if (wanted.length) {
       const withAll = ensureConnections(next, wanted);
       if (withAll !== next) next = { ...withAll, estimate: estimate(withAll) };
@@ -49,7 +53,7 @@ export async function POST(req: Request) {
   const full = await projectCapMessage(supa, user);
   if (full) return Response.json({ error: full, code: "cap" }, { status: 403 });
   // A code app: Claude writes real files (lib/code-apps/generate.ts). Business apps carry on below, exactly as before.
-  if (asKind(body.kind) === "code") return codePlanResponse({ user, supa, brief, answers });
+  if (asKind(body.kind) === "code") return codePlanResponse({ user, supa, brief, answers, look: look ?? "auto" });
   const hold = await holdModelBudget(user, "plan");
   if (!hold.ok && hold.reason === "rate") return Response.json({ error: "That's a lot of plans in a few minutes. Wait a little, then try again." }, { status: 429 });
   // A plan by Claude costs credits; without enough, it starts from the closest starter plan, free.

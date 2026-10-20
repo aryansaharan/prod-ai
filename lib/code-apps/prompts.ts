@@ -3,6 +3,7 @@ import { z } from "zod";
 import { PACKAGE_LIST } from "./packages";
 import { LIMITS, type BuildError, type CodeApp } from "./schema";
 import { STYLE_RULE } from "@/lib/text";
+import { LOOKS, lookFromWords, type CodeLook } from "@/lib/looks";
 
 /**
  * What Claude is told when it writes, changes or fixes a code app, and the shapes it answers in.
@@ -117,13 +118,24 @@ export function manifestBlock(app: Pick<CodeApp, "manifest">): string {
   return `<manifest>\n${JSON.stringify(app.manifest, null, 2)}\n</manifest>`;
 }
 
-export function writePrompt(brief: string, answers: string): string {
+/** The look the person picked for a code app, as direction the app is written to. "auto" leaves the look to the model. */
+function lookBlock(look: CodeLook | undefined, why: string): string {
+  if (!look || look === "auto") return "";
+  const l = LOOKS[look];
+  return `\n\n${why}\n<look name="${l.name}">\n${l.direction}\n</look>`;
+}
+
+export function writePrompt(brief: string, answers: string, look?: CodeLook): string {
   const extra = answers.trim() ? `\n\nAnswers to a few quick questions (hints; ignore any that don't fit this kind of app):\n${answers.trim()}` : "";
-  return `Write this app.\n\n<description>\n${brief}\n</description>${extra}`;
+  const style = lookBlock(look, "The person picked this look for it. Follow its palette, type, corners and ground closely, and use their exact values; the idea's own content and layout stay yours:");
+  return `Write this app.\n\n<description>\n${brief}\n</description>${extra}${style}`;
 }
 
 export function changePrompt(app: CodeApp, note: string): string {
-  return `${manifestBlock(app)}\n\n${filesBlock(app)}\n\nThe owner's note:\n<note>\n${note}\n</note>`;
+  // A note that asks for one of Prod AI's looks ("make it Midnight", "make it dark") gets that look's exact direction.
+  const asked = lookFromWords(note);
+  const style = asked ? lookBlock(asked, "The note asks for this look. Restyle the whole app to it (palette, type, corners, ground) and keep its content and behaviour:") : "";
+  return `${manifestBlock(app)}\n\n${filesBlock(app)}\n\nThe owner's note:\n<note>\n${note}\n</note>${style}`;
 }
 
 /** Lines around an error, numbered, so Claude can see exactly where it is. */

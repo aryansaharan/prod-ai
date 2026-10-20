@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Block, Blueprint, Screen } from "@/lib/blueprint/schema";
+import { LOOK_IDS, isLook } from "@/lib/looks";
 import type { ChangeOperation } from "@/lib/db/types";
 import { applyOperation } from "@/lib/blueprint/pointer";
 import { applySupervision } from "@/lib/blueprint/describe";
@@ -72,8 +73,13 @@ export const EditsSchema = z.object({
   rehearsals: z.array(z.object({ agent: NamedRef, name: z.string(), input: z.string(), expect: z.string() })).default([]).describe("New test conversations"),
   renames: z.array(z.object({ type: z.enum(["project", "screen", "agent", "entity", "connection"]), target: z.string().default("").describe("id or current name; empty for project"), name: z.string() })).default([]),
   theme: z
-    .object({ primary: z.string().default("").describe("Hex colour like #0F766E, or empty to keep"), radius: z.enum(["keep", "sm", "md", "lg"]).default("keep"), density: z.enum(["keep", "compact", "comfortable"]).default("keep") })
-    .default({ primary: "", radius: "keep", density: "keep" })
+    .object({
+      primary: z.string().default("").describe("Hex colour like #0F766E, or empty to keep"),
+      radius: z.enum(["keep", "sm", "md", "lg"]).default("keep"),
+      density: z.enum(["keep", "compact", "comfortable"]).default("keep"),
+      look: z.enum(["keep", ...LOOK_IDS]).default("keep").describe("The whole style: clean (crisp), paper (warm, editorial, serif), midnight (dark), soft (rounded, pastel), mono (sharp, monochrome), bold (brutalist, thick lines); keep to leave it"),
+    })
+    .default({ primary: "", radius: "keep", density: "keep", look: "keep" })
     .describe("Only include when changing the look"),
   newScreens: z
     .array(
@@ -337,6 +343,7 @@ export function compileEdits(bp: Blueprint, e: Edits, scopeScreenId?: string): C
   else if (e.theme.primary) fail(`theme: "${e.theme.primary}" is not a hex colour like #0F766E`, `“${e.theme.primary}” isn't a colour I can use, so the colour stays as it is.`);
   if (e.theme.radius !== "keep") next.meta.theme.radius = e.theme.radius;
   if (e.theme.density !== "keep") next.meta.theme.density = e.theme.density;
+  if (e.theme.look !== "keep") next.meta.theme.look = e.theme.look;
 
   for (const s of e.newScreens) {
     if (next.screens.length >= 8) { fail("newScreens: the app already has 8 screens (the maximum)", "The app already has 8 screens, the most it can have, so no new screen is added."); break; }
@@ -434,7 +441,7 @@ export function partialRationale(notes: string[]): string {
 
 /** A compact map of the blueprint for the model: names, ids, fields, tables, tools. */
 export function blueprintIndex(bp: Blueprint): string {
-  const lines: string[] = [`Project: ${bp.meta.name} (theme ${bp.meta.theme.primary}, radius ${bp.meta.theme.radius}, density ${bp.meta.theme.density})`];
+  const lines: string[] = [`Project: ${bp.meta.name} (theme ${bp.meta.theme.primary}, look ${bp.meta.theme.look ?? "clean"}, radius ${bp.meta.theme.radius}, density ${bp.meta.theme.density})`];
   lines.push("Data types:");
   for (const e of bp.entities) lines.push(`- ${e.name} / ${e.plural} (id ${e.id}): ${e.fields.map((f) => `${f.name}:${f.type}${f.type === "enum" && f.options?.length ? `(${f.options.join("|")})` : ""}`).join(", ")} · ${e.sample.length} sample records`);
   lines.push("Screens:");
@@ -474,6 +481,7 @@ export function salvageEdits(raw: unknown): Edits | null {
     const t = x.theme as Record<string, unknown>;
     if (t.radius && !["keep", "sm", "md", "lg"].includes(String(t.radius))) t.radius = "keep";
     if (t.density && !["keep", "compact", "comfortable"].includes(String(t.density))) t.density = "keep";
+    if (t.look !== undefined) t.look = isLook(String(t.look).toLowerCase()) ? String(t.look).toLowerCase() : "keep";
   }
   arr("sortTables")?.forEach((o) => {
     const d = String(o.dir ?? "asc").toLowerCase();
