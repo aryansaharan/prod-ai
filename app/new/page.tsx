@@ -7,6 +7,7 @@ import { Logo, GitHubMark } from "@/components/brand/logo";
 import { NewProject } from "@/components/new/new-project";
 import { ImportWizard } from "@/components/import/import-wizard";
 import { llmMode } from "@/lib/llm/provider";
+import { guestFreePlanLeft } from "@/lib/pricing";
 
 export const metadata = { title: "New project" };
 
@@ -16,7 +17,7 @@ export default async function NewPage(props: PageProps<"/new">) {
   const sp = await props.searchParams;
   const user = await requireUser("/new");
   // At the most projects they can keep, people hear it before they write, not after the plan is sketched.
-  const capMessage = await projectCapMessage(await createClient(), user);
+  const [capMessage, guestPlanLeft] = await Promise.all([projectCapMessage(await createClient(), user), user.isAnonymous ? guestFreePlanLeft(user.id) : Promise.resolve(false)]);
   const prompt = typeof sp.prompt === "string" ? sp.prompt.slice(0, MAX_BRIEF) : "";
   const repo = typeof sp.repo === "string" ? sp.repo : "";
   const isImport = sp.mode === "import";
@@ -47,7 +48,7 @@ export default async function NewPage(props: PageProps<"/new">) {
         {isImport ? (
           <ImportWizard initialRepo={repo} llm={llmMode()} isGuest={user.isAnonymous} capMessage={capMessage} />
         ) : (
-          <NewProject initialPrompt={prompt} llm={llmMode()} isGuest={user.isAnonymous} capMessage={capMessage} />
+          <NewProject initialPrompt={prompt} llm={llmMode()} isGuest={user.isAnonymous} guestPlanLeft={guestPlanLeft} capMessage={capMessage} />
         )}
       </main>
     </div>

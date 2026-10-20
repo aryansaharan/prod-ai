@@ -58,10 +58,19 @@ const STARTER_NAME: Record<Exclude<Vertical, "custom">, string> = {
   hr: "a new-hire checklist",
 };
 
-/** Said to a guest before and while a plan starts from a starter: the closest one, or, when none is close, which one it is. */
-export function guestStarterNote(brief: string): string {
+/** Which starter a brief would start from, in words: "a support inbox". */
+export function starterName(brief: string): string {
+  return STARTER_NAME[matchVertical(brief).vertical];
+}
+
+/**
+ * Said to a guest before and while a plan starts from a starter (their free first plan is used, or the model
+ * can't plan right now): which starter it is, plainly, and that it isn't their own words.
+ */
+export function guestStarterNote(brief: string, why: "used" | "unavailable" = "used"): string {
   const m = matchVertical(brief);
-  return m.weak
-    ? `None of the starter plans is close to this, so it starts from the nearest one (${STARTER_NAME[m.vertical]}) for you to reshape with notes. Sign in and Prod AI plans it from your own words.`
-    : "Guests start from the closest starter plan. Sign in and Prod AI plans it from your own words.";
+  const which = m.weak ? `none of the starter plans is close to this, so it starts from the nearest one (${STARTER_NAME[m.vertical]})` : `it starts from the closest starter plan (${STARTER_NAME[m.vertical]})`;
+  return why === "unavailable"
+    ? `Prod AI can't plan from your words right now, so ${which}. Your free guest plan is still there for the next app.`
+    : `You've used your free guest plan, so ${which}, not your own words. Sign in and Prod AI plans it from your own words.`;
 }

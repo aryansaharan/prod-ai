@@ -6,7 +6,8 @@ import { PRICE, resetWords, type CreditMeter, type Credits, type Priced } from "
  * What Prod AI charges, in credits, and each person's monthly allowance. Only work that calls the
  * model costs credits; making an app real, publishing it and anything that runs without the model
  * (starter plans, rule-based changes, scripted answers) is free. A call that fails is never charged.
- * Guests have no allowance: they use the free starter plans. Allowances reset on the 1st (UTC).
+ * Guests have no allowance, except that their first app is planned from their own words, free
+ * (guestFreePlanLeft); after that they use the free starter plans. Allowances reset on the 1st (UTC).
  * The prices themselves are in lib/prices.ts (browser-safe), so pages show the same numbers.
  * The real cost of every call is still metered separately for the daily model budget (lib/llm/guard.ts).
  */
@@ -36,8 +37,27 @@ export async function creditsThisMonth(userId: string, isGuest: boolean): Promis
 
 /** The meter for the top bar, Home and Settings: this month's credits, and for a guest what signing in gives. */
 export async function creditMeter(user: { id: string; isAnonymous: boolean }): Promise<CreditMeter> {
-  const credits = await creditsThisMonth(user.id, user.isAnonymous);
-  return { ...credits, guest: user.isAnonymous, memberAllowance: monthlyAllowance(false) };
+  const [credits, guestPlanLeft] = await Promise.all([creditsThisMonth(user.id, user.isAnonymous), user.isAnonymous ? guestFreePlanLeft(user.id) : Promise.resolve(false)]);
+  return { ...credits, guest: user.isAnonymous, memberAllowance: monthlyAllowance(false), guestPlanLeft };
+}
+
+/**
+ * A guest's first app is planned by the model from their own words, on the house: one saved plan per guest.
+ * A plan that failed or couldn't be saved doesn't use it up. If it can't be checked, it's treated as used.
+ */
+export async function guestFreePlanLeft(userId: string): Promise<boolean> {
+  if (!hasAdmin()) return false;
+  const { count, error } = await adminClient()
+    .from("usage_events")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .eq("kind", "llm")
+    .eq("meta->>guestFree", "true");
+  if (error) {
+    console.error("[pricing] guest plan check failed", error.message);
+    return false;
+  }
+  return (count ?? 0) === 0;
 }
 
 /** Whether this person can pay for one of these right now. */

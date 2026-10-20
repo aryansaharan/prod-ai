@@ -23,7 +23,8 @@ export type Priced = keyof typeof PRICE;
 export type Credits = { used: number; allowance: number; left: number; resetsOn: string };
 
 /** The meter pages show: this month's credits, whether it's a guest, and the monthly allowance signing in gives. */
-export type CreditMeter = Credits & { guest: boolean; memberAllowance: number };
+/** guestPlanLeft: a guest whose first app (planned from their own words, free) is still to come. */
+export type CreditMeter = Credits & { guest: boolean; memberAllowance: number; guestPlanLeft: boolean };
 
 /** What costs credits, in plain words, in the order people meet them. */
 export const PRICE_LIST: { what: string; credits: number }[] = [

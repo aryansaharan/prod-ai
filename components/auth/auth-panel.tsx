@@ -146,7 +146,7 @@ export function AuthPanel({ next, guestNext, error, isGuest }: { next: string; g
         </a>
       </Button>
       <p className="mt-2.5 text-center text-meta text-muted-foreground">
-        {isGuest ? "Everything you've made so far is still there. Guests start from the closest starter plan." : "No account needed. Guests start from the closest starter plan instead of their own words. Sign in any time to keep your work."}
+        {isGuest ? "Everything you've made so far is still there. After a guest's first app, new ones start from the closest starter plan." : "No account needed. Your first app is planned from your own words, free. Sign in any time to keep your work."}
       </p>
     </div>
   );

@@ -128,7 +128,7 @@ export function SettingsView({
               <p className="micro-label">Your free credits · this month</p>
               {credits.guest ? (
                 <>
-                  <p className="mt-1.5 text-body">Guests use the free starter plans, so nothing costs credits.</p>
+                  <p className="mt-1.5 text-body">{credits.guestPlanLeft ? "Your first app is planned from your own words, free. After that, guests use the free starter plans, so nothing costs credits." : "You've used your free guest plan, so new apps start from the free starter plans. Nothing costs credits."}</p>
                   <p className="mt-1 text-ui text-muted-foreground">Sign in for {credits.memberAllowance} free credits a month, and Prod AI plans your apps, writes changes and answers as your AI helpers.</p>
                   <Button asChild variant="outline" className="mt-3">
                     <Link href="/login?next=/settings">Sign in for free credits</Link>
