@@ -26,7 +26,7 @@ export function useStopBuild() {
     setStopping(false);
     if (!r.ok) return void toast.error(r.error);
     ws.build.dismiss();
-    const kept = ws.build.charged ? ` The test runs Claude already played (${plural(ws.build.charged, "credit")}) stay on your bill.` : "";
+    const kept = ws.build.charged ? ` The test runs the AI already played (${plural(ws.build.charged, "credit")}) stay on your bill.` : "";
     toast.success("Stopped", { description: stoppedWords(r.refunded, `Your sketch is exactly as you left it.${kept}`) });
     router.refresh();
   };
@@ -147,7 +147,7 @@ export function BuildProgress({ showStop, ref }: { showStop: boolean; ref?: Ref<
             <FlaskConical className="size-3.5 shrink-0" aria-hidden />
             <span>
               {b.tests === "claude"
-                ? `Every step is real: the plan is checked, the code compiled, and Claude plays each test run (${PRICE.testRun} credits each).`
+                ? `Every step is real: the plan is checked, the code compiled, and the AI plays each test run (${PRICE.testRun} credits each).`
                 : "Every step is real: the plan is checked and the code compiled."}
             </span>
           </p>

@@ -63,7 +63,7 @@ function GuestNote({ brief }: { brief: string }) {
       <Link href={signInHref(comeBack(brief))} className="text-foreground underline decoration-dotted underline-offset-4">
         Sign in
       </Link>{" "}
-      and Claude plans it from your own words.
+      and Prod AI plans it from your own words.
     </p>
   );
 }
@@ -270,14 +270,14 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
 
             {kind === "code" ? (
               <div className="border-t border-dashed border-hairline-hi px-5 py-6 sm:px-8">
-                <h2 className="font-pencil text-section">Claude writes it from your note</h2>
+                <h2 className="font-pencil text-section">Prod AI writes it from your note</h2>
                 <p className="mt-2 text-body text-muted-foreground">
                   Real files, in React and Tailwind. Prod AI really builds them and starts your app in a sealed test space where you can try it. You see every file, and you can download them all.
                 </p>
                 {isGuest && (
                   <p className="mt-3 flex gap-2 text-body text-foreground">
                     <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                    Claude writes real code for people who are signed in. Sign in and your note comes with you.
+                    Prod AI writes real code for people who are signed in. Sign in and your note comes with you.
                   </p>
                 )}
               </div>
@@ -359,7 +359,7 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
                     </Button>
                     <Button asChild size="cta" className="ml-auto">
                       <Link href={signInHref(comeBack(brief))}>
-                        Sign in to have Claude write it <ArrowRight />
+                        Sign in to have Prod AI write it <ArrowRight />
                       </Link>
                     </Button>
                   </>
@@ -383,7 +383,7 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
           <div className="mt-4 space-y-1.5 text-meta text-muted-foreground sm:text-right">
             {kind === "code" ? (
               <p>
-                Claude writes it for <span className="tabular-nums">{PRICE.codeApp}</span> credits, charged only once it&apos;s saved. Making it real is free.
+                Prod AI writes it for <span className="tabular-nums">{PRICE.codeApp}</span> credits, charged only once it&apos;s saved. Making it real is free.
               </p>
             ) : (
               <p>Sketching is free. Nothing is built until you say so, and you see the price first.</p>

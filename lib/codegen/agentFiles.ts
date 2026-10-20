@@ -37,7 +37,7 @@ export function agentYaml(agent: Agent, bp: Blueprint): string {
     "rehearsals:",
     ...agent.rehearsals.flatMap((r) => [`  - name: ${y(r.name)}`, `    input: ${y(r.input)}`, `    expect: ${y(r.expect)}`]),
     "budget:",
-    `  credits_per_message: ${PRICE.helperMessage}   # each message Claude answers`,
+    `  credits_per_message: ${PRICE.helperMessage}   # each message the AI answers`,
     "",
   ];
   return lines.join("\n");

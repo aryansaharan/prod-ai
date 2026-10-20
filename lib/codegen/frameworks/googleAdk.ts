@@ -183,7 +183,7 @@ function notes(agent: Agent): string[] {
         "ADK would treat {name} in the instruction as session state, so the instruction is passed as a callable to keep the text verbatim.",
     ],
     [
-      "Claude runs through LiteLlm with ANTHROPIC_API_KEY; ADK's built-in Claude class targets Vertex AI.",
+      "The model runs through LiteLlm with ANTHROPIC_API_KEY; ADK's own class for it targets Vertex AI.",
       "root_agent lives in a single file here; move it to <package>/agent.py to use adk web or adk run.",
     ],
   );

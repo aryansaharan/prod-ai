@@ -50,10 +50,10 @@ export function AddAgentDialog({ open, onOpenChange, onAdded }: { open: boolean;
     ws.llm !== "live"
       ? "Offline mode: starts from a careful template you can edit, free."
       : ws.credits.guest
-        ? `As a guest, it starts from a careful template you can edit, free. Signed in, Claude writes it for ${PRICE.newHelper} credits.`
+        ? `As a guest, it starts from a careful template you can edit, free. Signed in, Prod AI writes it for ${PRICE.newHelper} credits.`
         : byClaude
-          ? `Claude writes its job, rules, actions and test runs for ${PRICE.newHelper} credits (a template is free). You check them before it does anything.`
-          : `You have ${Math.floor(ws.credits.left)} credits left this month, so it starts from a careful template you can edit, free. Claude writing it costs ${PRICE.newHelper}.`;
+          ? `Prod AI writes its job, rules, actions and test runs for ${PRICE.newHelper} credits (a template is free). You check them before it does anything.`
+          : `You have ${Math.floor(ws.credits.left)} credits left this month, so it starts from a careful template you can edit, free. Having Prod AI write it costs ${PRICE.newHelper}.`;
 
   useEffect(() => {
     if (!drafting) return;
@@ -109,7 +109,7 @@ export function AddAgentDialog({ open, onOpenChange, onAdded }: { open: boolean;
                     </li>
                   ))}
                 </ol>
-                <p className="mt-2.5 text-badge text-muted-foreground">{byClaude ? "Claude is drafting it. This usually takes 10 to 15 seconds." : "Starting from a careful template."}</p>
+                <p className="mt-2.5 text-badge text-muted-foreground">{byClaude ? "Prod AI is drafting it. This usually takes 10 to 15 seconds." : "Starting from a careful template."}</p>
               </div>
             ) : (
               <p className="mt-1.5 text-meta tabular-nums text-muted-foreground">{describeNote}</p>

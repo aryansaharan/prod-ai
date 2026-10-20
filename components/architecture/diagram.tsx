@@ -104,7 +104,7 @@ export const CARDS: Card[] = [
   // people
   { id: "studio", x: 40, y: 196, w: 204, h: 184, title: "Builder studio", sub: "One project for the people who describe apps and the people who code them", icon: LayoutDashboard, tone: "people", tags: ["Plain", "Settings", "Code"], step: [1] },
   { id: "teammates", x: 40, y: 396, w: 204, h: 96, title: "Teammates", sub: "Handoffs arrive with the object, history and diff", icon: Users, tone: "people" },
-  { id: "editor", x: 40, y: 508, w: 204, h: 96, title: "Your editor", sub: "Cursor, Claude Code or VS Code on the same repo", icon: Laptop, tone: "people" },
+  { id: "editor", x: 40, y: 508, w: 204, h: 96, title: "Your editor", sub: "Cursor, VS Code or any editor on the same repo", icon: Laptop, tone: "people" },
   { id: "endusers", x: 40, y: 620, w: 204, h: 96, title: "People using live apps", sub: "Public URLs and custom domains", icon: Users, tone: "people", step: [8] },
   // edge
   { id: "cdn", x: 316, y: 196, w: 204, h: 88, title: "CDN + WAF", sub: "Cloudflare: static assets, WAF, bot and DDoS protection", icon: Shield, tone: "edge" },

@@ -27,7 +27,7 @@ const SECTIONS = [
 
 // Quotes are logged at 0 credits (they're free), so paid "llm" events are plans by Claude and AI helpers it wrote.
 // Builds cost credits only under the earlier pricing; making it real is free now.
-const KIND_LABEL: Record<string, string> = { llm: "Plans and new AI helpers by Claude", build: "Builds, under the earlier pricing", change: "Changes Claude wrote", agent_run: "AI helper messages", import: "Repos imported by Claude", refund: "Refunds", tweak: "Tweaks" };
+const KIND_LABEL: Record<string, string> = { llm: "Plans and new AI helpers", build: "Builds, under the earlier pricing", change: "Changes Prod AI wrote", agent_run: "AI helper messages", import: "Repos imported", refund: "Refunds", tweak: "Tweaks" };
 
 const CATALOG = [
   { provider: "github", name: "GitHub", body: "Two-way sync, a branch per change, test runs on every change." },
@@ -122,14 +122,14 @@ export function SettingsView({
 
         <section id="usage" className="scroll-mt-24">
           <h2 className="font-pencil text-section">Usage &amp; budget</h2>
-          <p className="mt-2 text-ui text-muted-foreground">Only work Claude does costs credits, and you see the price before it runs. Every credit is attributed here.</p>
+          <p className="mt-2 text-ui text-muted-foreground">Only AI work costs credits, and you see the price before it runs. Every credit is attributed here.</p>
           <div className="panel mt-5 grid rounded-md lg:grid-cols-2">
             <div className="p-4">
               <p className="micro-label">Your free credits · this month</p>
               {credits.guest ? (
                 <>
                   <p className="mt-1.5 text-body">Guests use the free starter plans, so nothing costs credits.</p>
-                  <p className="mt-1 text-ui text-muted-foreground">Sign in for {credits.memberAllowance} free credits a month, and Claude plans your apps, writes changes and answers as your AI helpers.</p>
+                  <p className="mt-1 text-ui text-muted-foreground">Sign in for {credits.memberAllowance} free credits a month, and Prod AI plans your apps, writes changes and answers as your AI helpers.</p>
                   <Button asChild variant="outline" className="mt-3">
                     <Link href="/login?next=/settings">Sign in for free credits</Link>
                   </Button>

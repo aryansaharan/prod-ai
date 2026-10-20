@@ -55,13 +55,13 @@ const TODAY: { part: string; status: { label: string; kind: Status }[]; today: s
   {
     part: "Planner",
     status: [{ label: "Real", kind: "real" }],
-    today: "Claude picks the kind of app. For a business app it plans a structured Blueprint, streamed live, and code expands it deterministically and validates every reference; for anything else it writes real React files, streamed file by file. Guests start from a starter plan",
+    today: "The model picks the kind of app. For a business app it plans a structured Blueprint, streamed live, and code expands it deterministically and validates every reference; for anything else it writes real React files, streamed file by file. Guests start from a starter plan",
     prod: "Same contract, routed through the model gateway",
   },
   {
     part: "Change requests",
     status: [{ label: "Real", kind: "real" }],
-    today: "Claude returns typed edits; code resolves names and emits validated operations, with one self-repair retry; each change has a fixed price, Apply and Undo, and makes a new version",
+    today: "The model returns typed edits; code resolves names and emits validated operations, with one self-repair retry; each change has a fixed price, Apply and Undo, and makes a new version",
     prod: "Same, executed by the harness in a sandbox; parallel Work Orders rebase onto a versioned Blueprint",
   },
   {
@@ -79,7 +79,7 @@ const TODAY: { part: string; status: { label: string; kind: Status }[]; today: s
       { label: "Approval gates: real", kind: "real" },
       { label: "Production gateway: designed", kind: "designed" },
     ],
-    today: "Claude + AI SDK tool approval, signed by the server: tools marked “Ask first” pause for a person. Try it runs on sample data; helpers in published apps work on that app's records and send email only after a person says yes. Other outside connections aren't real yet, and nothing holds credentials or controls egress",
+    today: "AI SDK tool approval, signed by the server: tools marked “Ask first” pause for a person. Try it runs on sample data; helpers in published apps work on that app's records and send email only after a person says yes. Other outside connections aren't real yet, and nothing holds credentials or controls egress",
     prod: "Every production tool call passes an egress gateway that holds the credentials, enforces approvals and caps, tracks untrusted content per run, and traces the call",
   },
   {
@@ -88,7 +88,7 @@ const TODAY: { part: string; status: { label: string; kind: Status }[]; today: s
       { label: "Builds, test runs, repairs: real", kind: "real" },
       { label: "Tool loop in microVMs: designed", kind: "designed" },
     ],
-    today: "A business app's build checks every reference in the plan, compiles the generated code with esbuild, and has Claude play and judge each AI helper's test runs (price shown first); a real failure gets a free fix and a free replay. A code app is compiled and bundled with esbuild in about 15 ms, and Claude repairs real build and runtime errors for free. Generated business-app code is compiled, not executed",
+    today: "A business app's build checks every reference in the plan, compiles the generated code with esbuild, and has the model play and judge each AI helper's test runs (price shown first); a real failure gets a free fix and a free replay. A code app is compiled and bundled with esbuild in about 15 ms, and the model repairs real build and runtime errors for free. Generated business-app code is compiled, not executed",
     prod: "Full tool loop inside microVMs with verifier and budgets",
   },
   {

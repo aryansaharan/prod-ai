@@ -63,7 +63,7 @@ export async function cancelBuild(projectId: string): Promise<Result & { refunde
     await supa.from("work_orders").update({ status: "proposed" }).eq("project_id", projectId).eq("kind", "build").eq("status", "running");
     if (refund > 0) await logUsage({ userId: user.id, projectId, kind: "refund", credits: -refund, meta: { note: "Build stopped, refunded" } });
     const plan = fixed ? "The plan keeps the free fix you picked during the build. Everything else is exactly as you left it." : "The plan is exactly as you left it.";
-    const tests = report?.credits ? ` The ${report.credits} credits of test runs Claude already played stay charged.` : "";
+    const tests = report?.credits ? ` The ${report.credits} credits of test runs the AI already played stay charged.` : "";
     // Stopping is the person's choice, not a fix Prod AI made: log it as theirs (no "Our fix" badge, not counted as a fix).
     await addLedger(supa, projectId, [
       {

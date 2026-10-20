@@ -596,7 +596,7 @@ function ChangeCard({
                 )}
               </>
             )}
-            {p.mode === "rules" && !needsPerson && !order.note && <p className="mt-1 text-meta text-faint">Worked out by built-in rules, not by Claude.</p>}
+            {p.mode === "rules" && !needsPerson && !order.note && <p className="mt-1 text-meta text-faint">Worked out by built-in rules, not by the AI.</p>}
           </>
         )}
       </div>

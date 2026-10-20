@@ -110,7 +110,7 @@ export function RepairOverlay() {
           </div>
         </div>
         <div className="flex shrink-0 flex-wrap items-center justify-between gap-2 p-5 pt-4 max-sm:border-t max-sm:border-hairline max-sm:pt-3">
-          <p className="text-meta text-muted-foreground">With a fix, Claude plays the failed test runs again before you see the app, free.</p>
+          <p className="text-meta text-muted-foreground">With a fix, the AI plays the failed test runs again before you see the app, free.</p>
           {ws.build.mode === "build" ? (
             <div className="flex flex-wrap items-center gap-1">
               <Button variant="ghost" className="text-muted-foreground" disabled={stopping || Boolean(ws.build.repairChoice)} onClick={() => ws.build.choose("none")}>
@@ -126,7 +126,7 @@ export function RepairOverlay() {
                 setStopping(false);
                 if (!r.ok) return toast.error(r.error);
                 ws.build.dismiss();
-                toast.success("Build stopped", { description: stoppedWords(r.refunded, `Your plan is exactly as you left it.${ws.build.charged ? ` The test runs Claude already played (${ws.build.charged} credits) stay on your bill.` : ""}`) });
+                toast.success("Build stopped", { description: stoppedWords(r.refunded, `Your plan is exactly as you left it.${ws.build.charged ? ` The test runs the AI already played (${ws.build.charged} credits) stay on your bill.` : ""}`) });
                 router.refresh();
               }}
             >

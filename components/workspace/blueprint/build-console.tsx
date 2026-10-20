@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { DUR, EASE } from "@/lib/motion";
 import { useWorkspace } from "../context";
 
-export const REAL_NOTE = "Every step really runs on Prod AI's server: the plan is checked, the code compiled, and the test runs are played by Claude and judged.";
+export const REAL_NOTE = "Every step really runs on Prod AI's server: the plan is checked, the code compiled, and the test runs are played by the AI and judged.";
 
 /** Calm, always-visible label saying the build you watch is the real one. */
 export function RealBuildChip({ className }: { className?: string }) {

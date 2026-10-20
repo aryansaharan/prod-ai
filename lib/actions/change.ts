@@ -48,10 +48,10 @@ export async function requestChange(projectId: string, request: string, scope: O
   // change is offered (or it goes to a person), so quotes can't run up model costs.
   const afford = hold.ok && !capped ? await canAfford(user.id, user.isAnonymous, "change") : null;
   const useModel = hold.ok && !capped && Boolean(afford?.ok);
-  const creditsNote = afford && !afford.ok && afford.credits.allowance ? outOfCreditsNote(afford.credits, "this change was worked out without Claude") : undefined;
+  const creditsNote = afford && !afford.ok && afford.credits.allowance ? outOfCreditsNote(afford.credits, "this change was worked out without live AI") : undefined;
   try {
     const { proposal, usage } = await proposeChange(project.blueprint, text, scope, { allowModel: useModel });
-    const capWords = `Claude is paused: this project has reached its ${cap}-credit spending cap this month`;
+    const capWords = `AI work is paused: this project has reached its ${cap}-credit spending cap this month`;
     const note = capped ? (proposal.operations.length ? `${capWords}, so the free built-in rules worked this out.` : `${capWords}, and the free built-in rules can't make this one.`) : creditsNote;
     if (usage) {
       // The quote is free: 0 credits. Its real cost is metered, failed attempts included, for the daily model budget.
@@ -173,20 +173,20 @@ async function requestCodeChange(user: SessionUser, supa: Supa, project: Project
   if (!project.code) return { ok: false, error: "This app has no files yet, so there's nothing to change." };
   const spent = await usageSummary(supa, { projectId, sinceIso: monthStartIso() });
   const cap = project.settings.budgetCapCredits;
-  if (spent.credits >= cap) return { ok: false, error: `Claude is paused: this project has reached its ${cap}-credit spending cap this month, and changing an app's code needs Claude. You can raise the cap in Settings. Nothing was charged.` };
+  if (spent.credits >= cap) return { ok: false, error: `AI work is paused: this project has reached its ${cap}-credit spending cap this month, and changing an app's code needs live AI. You can raise the cap in Settings. Nothing was charged.` };
   const m = getModel();
-  if (!m) return { ok: false, error: "Changing an app's code needs Claude, which isn't set up here. Nothing was charged." };
+  if (!m) return { ok: false, error: "Changing an app's code needs live AI, which isn't set up here. Nothing was charged." };
   // Claude writes the change only for someone who could pay to apply it, so quotes can't run up model costs.
   const hold = await holdModelBudget(user, "change", codeChangeHoldUsd(project.code, text));
   if (!hold.ok && hold.reason === "rate") return { ok: false, error: "That's a lot of changes in a few minutes. Wait a little, then try again. Nothing was charged." };
-  if (!hold.ok) return { ok: false, error: "Claude has done a lot for this account today, so it can't change the code right now. It comes back within 24 hours. Nothing was charged." };
+  if (!hold.ok) return { ok: false, error: "Prod AI has done a lot for this account today, so it can't change the code right now. It comes back within 24 hours. Nothing was charged." };
   try {
     const afford = await canAfford(user.id, user.isAnonymous, "codeChange");
     if (!afford.ok) {
       return {
         ok: false,
         error: afford.credits.allowance
-          ? `A change to the code costs ${PRICE.codeChange} credits. ${outOfCreditsNote(afford.credits, "Claude can't change it right now")}`
+          ? `A change to the code costs ${PRICE.codeChange} credits. ${outOfCreditsNote(afford.credits, "Prod AI can't change it right now")}`
           : `A change to the code costs ${PRICE.codeChange} credits. Sign in to get free credits every month.`,
       };
     }

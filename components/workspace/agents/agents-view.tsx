@@ -233,7 +233,7 @@ function HelperView({ agent: saved, onRunSaved, onDetails }: { agent: Agent; onR
           </section>
 
           <p className="mt-4 flex flex-wrap items-center gap-x-2 gap-y-1 text-meta text-muted-foreground">
-            <span><span className="tabular-nums">{PRICE.helperMessage}</span> <Term k="credits">credits</Term> a message Claude answers</span>
+            <span><span className="tabular-nums">{PRICE.helperMessage}</span> <Term k="credits">credits</Term> a message the AI answers</span>
             <span aria-hidden>·</span>
             <button onClick={onDetails} className="underline decoration-dotted underline-offset-4 transition-colors duration-150 hover:text-foreground">Details for developers</button>
           </p>
@@ -317,12 +317,12 @@ function Rehearsals({ agent }: { agent: Agent }) {
           <div className="panel flex flex-col justify-between rounded-md p-4">
             <div>
               <p className="text-body font-medium"><Term k="rehearsal">Test runs</Term> are practice conversations {agent.name} must get right before anyone relies on it.</p>
-              <p className="mt-1 text-ui text-muted-foreground">Claude plays {agent.name} on each one, and a second call checks the answer against what should happen. They also run when you make the app real.</p>
+              <p className="mt-1 text-ui text-muted-foreground">The AI plays {agent.name} on each one, and a second call checks the answer against what should happen. They also run when you make the app real.</p>
             </div>
             <Button className="mt-3 w-fit" onClick={runAll} disabled={running !== null || !agent.rehearsals.length}>
-              {running !== null ? <Loader2 className="animate-spin" /> : <Play />} {running !== null ? `Claude is playing ${agent.rehearsals.length}…` : `Run all ${agent.rehearsals.length} · ${agent.rehearsals.length * PRICE.testRun} credits`}
+              {running !== null ? <Loader2 className="animate-spin" /> : <Play />} {running !== null ? `Playing ${agent.rehearsals.length}…` : `Run all ${agent.rehearsals.length} · ${agent.rehearsals.length * PRICE.testRun} credits`}
             </Button>
-            {ws.user.isAnonymous && <p className="mt-1.5 text-meta text-muted-foreground">Test runs are played by Claude, so they need you signed in.</p>}
+            {ws.user.isAnonymous && <p className="mt-1.5 text-meta text-muted-foreground">Test runs are played by the AI, so they need you signed in.</p>}
           </div>
         </div>
 

@@ -9,6 +9,7 @@ import { Segmented } from "@/components/arch/segmented";
 import { AccessChip, Avatar } from "@/components/arch/badges";
 import { Pill } from "@/components/ui/pill";
 import { Term } from "@/components/arch/term";
+import { modelLabel } from "@/lib/text";
 import type { Agent, AgentTool, Framework, ToolPermission } from "@/lib/blueprint/schema";
 import { Frameworks } from "@/lib/blueprint/schema";
 import { agentSummary, connectionName, FRAMEWORK_LABEL, MEMORY_LABEL, PERMISSION_LABEL, PERMISSION_PLAIN, presetPermission, SUPERVISION_LABEL, supervisionView } from "@/lib/blueprint/describe";
@@ -312,11 +313,11 @@ export function AgentSpec({ agent, only }: { agent: Agent; only?: SpecPart[] }) 
             </div>
             <div className="panel rounded-md p-2.5">
               <dt className="text-meta text-muted-foreground">Model</dt>
-              <dd className="mt-0.5 font-mono text-badge">{agent.cost.model}</dd>
+              <dd className="mt-0.5">{modelLabel(agent.cost.model)}</dd>
             </div>
             <div className="panel rounded-md p-2.5">
               <dt className="text-meta text-muted-foreground">Cost</dt>
-              <dd className="mt-0.5 tabular-nums">{PRICE.helperMessage} credits a message Claude answers</dd>
+              <dd className="mt-0.5 tabular-nums">{PRICE.helperMessage} credits a message the AI answers</dd>
             </div>
           </dl>
         </Section>

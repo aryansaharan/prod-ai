@@ -55,7 +55,7 @@ export async function fixPreflight(projectId: string, action: PreflightFix): Pro
       played += r.total ?? 0;
       credits += r.credits ?? 0;
     }
-    return { ok: true, message: `Claude played ${played} test run${played === 1 ? "" : "s"}: ${passed} passed${credits ? ` · ${credits} credits` : ""}.` };
+    return { ok: true, message: `The AI played ${played} test run${played === 1 ? "" : "s"}: ${passed} passed${credits ? ` · ${credits} credits` : ""}.` };
   } else if (action === "set_budget") {
     await updateProject(supa, projectId, { settings: { ...project.settings, budgetCapCredits: 500 } });
     await addLedger(supa, projectId, [{ lane: "did", kind: "budget", title: "Set a 500-credit monthly cap", credits: 0 }]);

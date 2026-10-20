@@ -104,13 +104,13 @@ export async function repairCodeApp(user: SessionUser, access: CodeAppAccess, pr
     return { ok: false, status: 429, error: "That's a lot of fixes in a few minutes. Wait a little, then try again.", code: "rate" };
 
   const m = getModel();
-  if (!m) return { ok: false, status: 503, error: "Fixing the code needs Claude, which isn't set up here.", code: "unavailable" };
+  if (!m) return { ok: false, status: 503, error: "Fixing the code needs live AI, which isn't set up here.", code: "unavailable" };
   const prompt = fixPrompt(app, problem);
   const hold = await holdModelBudget(user, "change", promptHoldUsd(FIX_INSTRUCTIONS.length + prompt.length, EDIT_MAX_OUTPUT));
   if (!hold.ok)
     return hold.reason === "rate"
-      ? { ok: false, status: 429, error: "That's a lot of work for Claude in a few minutes. Wait a little, then try again.", code: "rate" }
-      : { ok: false, status: 503, error: "Claude has done a lot for this account today, so it can't fix the code right now. It comes back within 24 hours.", code: "unavailable" };
+      ? { ok: false, status: 429, error: "That's a lot of AI work in a few minutes. Wait a little, then try again.", code: "rate" }
+      : { ok: false, status: 503, error: "Prod AI has done a lot for this account today, so it can't fix the code right now. It comes back within 24 hours.", code: "unavailable" };
 
   // Free: every attempt's real cost is metered at 0 credits, failures included.
   const meter = (spent: ModelSpend) =>
@@ -121,7 +121,7 @@ export async function repairCodeApp(user: SessionUser, access: CodeAppAccess, pr
   try {
     const fix = await editWithClaude(m, { instructions: FIX_INSTRUCTIONS, prompt, userId: user.id });
     await meter(fix.spent);
-    if (!fix.edit) return { ok: false, status: 502, error: "Claude couldn't work out a fix this time. Try again, or describe what you want in a note.", code: "failed" };
+    if (!fix.edit) return { ok: false, status: 502, error: "Prod AI couldn't work out a fix this time. Try again, or describe what you want in a note.", code: "failed" };
     summary = fix.edit.summary;
     reply = fix.edit.reply;
     let checked = await checkApp(applyEdit(app, fix.edit));
@@ -135,7 +135,7 @@ export async function repairCodeApp(user: SessionUser, access: CodeAppAccess, pr
         if (again.edit.summary) summary = again.edit.summary;
       }
     }
-    if (!checked.ok) return { ok: false, status: 502, error: "Claude's fix didn't pass Prod AI's checks, so it wasn't saved. Try again, or describe what you want in a note.", code: "failed" };
+    if (!checked.ok) return { ok: false, status: 502, error: "The fix didn't pass Prod AI's checks, so it wasn't saved. Try again, or describe what you want in a note.", code: "failed" };
     next = checked.app;
   } finally {
     await hold.release();
@@ -143,7 +143,7 @@ export async function repairCodeApp(user: SessionUser, access: CodeAppAccess, pr
 
   const files = fileChanges(app, next);
   if (!files.length && sameManifest(app.manifest, next.manifest))
-    return { ok: false, status: 422, error: "Claude didn't find anything to change for that error. Describe what you want in a note.", code: "failed" };
+    return { ok: false, status: 422, error: "Prod AI didn't find anything to change for that error. Describe what you want in a note.", code: "failed" };
 
   const words = summary || "Fixed what broke";
   // The build is cleared, so the studio builds the fixed files.

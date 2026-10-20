@@ -193,7 +193,7 @@ export function CodeSheet() {
               </Link>
             </div>
             <p className="mt-2 text-body text-muted-foreground">
-              {files.length} {files.length === 1 ? "file" : "files"} Claude wrote{real ? ", built and running above" : ""}. Change anything by writing a note in the margin.
+              {files.length} {files.length === 1 ? "file" : "files"} Prod AI wrote{real ? ", built and running above" : ""}. Change anything by writing a note in the margin.
             </p>
             <FileCards className="mt-5" files={files} real={real} />
           </section>

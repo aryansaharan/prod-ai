@@ -23,7 +23,7 @@ const FRAMEWORKS = Object.values(FRAMEWORK_LABEL);
 
 const WORKS = [
   "Sign in with Google or an email link, or try it as a guest",
-  "Sign in for 300 free credits a month, and Claude plans your app from your own words. Guests start from the closest starter plan, free.",
+  "Sign in for 300 free credits a month, and Prod AI plans your app from your own words. Guests start from the closest starter plan, free.",
   "Your projects are saved to your account, and only you can see them",
   "AI helpers you can talk to, which ask before anything that can't be undone",
   "Published apps keep real records you can undo, with team screens only the people you invite can open",
@@ -164,7 +164,7 @@ export default async function Landing() {
                 <PencilBox on seed={7} />
                 <div>
                   <h3 className="text-lead font-semibold">Open the code anywhere</h3>
-                  <p className="mt-1 text-body text-muted-foreground">Take it to Cursor, Claude Code or your own editor whenever you want the wheel, and bring it back.</p>
+                  <p className="mt-1 text-body text-muted-foreground">Take it to Cursor, VS Code or your own editor whenever you want the wheel, and bring it back.</p>
                 </div>
               </li>
             </ul>

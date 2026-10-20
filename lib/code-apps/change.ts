@@ -60,7 +60,7 @@ export async function proposeCodeChange(
   const spent: ModelSpend[] = [];
   const first = await editWithClaude(m, { instructions: CHANGE_INSTRUCTIONS, prompt: changePrompt(app, note), userId: opts.userId });
   spent.push(first.spent);
-  if (!first.edit) return { proposal: null, spent, error: "Claude didn't answer in time. Nothing was charged. Try again." };
+  if (!first.edit) return { proposal: null, spent, error: "The AI didn't answer in time. Nothing was charged. Try again." };
   const edit = first.edit;
 
   // A question, or nothing to change: answered, free.
@@ -100,7 +100,7 @@ export async function proposeCodeChange(
     }
     if (!checked.ok) {
       console.warn("[code-apps] the change still didn't pass the checks:", checked.errors.slice(0, 5));
-      return { proposal: null, spent, error: "Claude's change didn't pass Prod AI's checks, so it isn't offered. Nothing was charged. Try saying it another way." };
+      return { proposal: null, spent, error: "That change didn't pass Prod AI's checks, so it isn't offered. Nothing was charged. Try saying it another way." };
     }
   }
 

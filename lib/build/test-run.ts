@@ -54,7 +54,7 @@ export async function playTestRun(bp: Blueprint, agent: Agent, r: Rehearsal, opt
   const base = { agentId: agent.id, rehearsalId: r.id, name: r.name };
   const m = getModel();
   const judge = getFastModel();
-  if (!m || !judge) return { run: { ...base, outcome: "error", reason: "Claude isn't available right now, so this test run couldn't be played.", reply: "", calls: [], fix: null }, spend: [] };
+  if (!m || !judge) return { run: { ...base, outcome: "error", reason: "The AI isn't available right now, so this test run couldn't be played.", reply: "", calls: [], fix: null }, spend: [] };
   const spend: ModelSpend[] = [];
   const tools = new Map(agent.tools.map((t) => [t.id, t]));
 
@@ -93,7 +93,7 @@ export async function playTestRun(bp: Blueprint, agent: Agent, r: Rehearsal, opt
   } catch (e) {
     console.error("[test-run] helper run failed:", e instanceof Error ? e.message : e);
     spend.push(await failedSpend(m.id, undefined, { inputTokens: Math.ceil(agentInstructions(bp, agent).length / 3.5) * HELPER.steps, outputTokens: HELPER.output * HELPER.steps }));
-    return { run: { ...base, outcome: "error", reason: "Claude couldn't finish this test run (it timed out or failed), so it isn't counted.", reply: "", calls: [], fix: null }, spend };
+    return { run: { ...base, outcome: "error", reason: "The AI couldn't finish this test run (it timed out or failed), so it isn't counted.", reply: "", calls: [], fix: null }, spend };
   }
 
   // 2. A smaller call judges it against the expectation.
