@@ -151,7 +151,7 @@ export function PlanSketch({ className }: { className?: string }) {
       <g transform="rotate(9 200 20)">
         <Pencil d={`M170 10 L210 10 L220 20 L210 30 L170 30 Z`} width={1.2} />
         <circle data-stroke="" cx="212" cy="20" r="2" fill="none" stroke={GRAPHITE} strokeWidth="1" />
-        <text data-write="" x="175" y="25" fontSize="14" fill="var(--brand)" style={handwriting}>$0.60</text>
+        <text data-write="" x="175" y="25" fontSize="14" fill="var(--brand)" style={handwriting}>40 cr</text>
       </g>
     </svg>
   );
