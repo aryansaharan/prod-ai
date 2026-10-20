@@ -149,6 +149,8 @@ export function RealApp({ justBuilt }: { justBuilt: boolean }) {
   const replay = ws.build.status === "done" && ws.build.mode === "replay";
   const version = (ws.checkpoints.find((c) => c.id === ws.project.currentCheckpointId) ?? ws.checkpoints.reduce<(typeof ws.checkpoints)[number] | null>((m, c) => (!m || c.seq > m.seq ? c : m), null))?.seq;
   const asks = bp.agents.flatMap((a) => a.tools).filter((t) => t.permission === "ask").length;
+  // Only a build whose test runs were really played can say its helpers were tried on them (a guest's are skipped).
+  const tested = (ws.build.tests ?? ws.project.buildReport?.tests) === "claude";
   // The moment it lands, once: the title is written on, then the app inks in under it.
   const landing = useFirstShowing(`real:${ws.project.id}:${ws.build.mode}`, justBuilt);
 
@@ -201,7 +203,7 @@ export function RealApp({ justBuilt }: { justBuilt: boolean }) {
           <p className="mt-2.5 max-w-[60ch] text-lead text-muted-foreground">
             {replay
               ? "Replays are free and change nothing. Below is the app as it is now."
-              : `${plural(bp.screens.length, "screen")} and ${plural(bp.agents.length, "AI helper")}, all tried on their test runs first.${asks ? ` ${plural(asks, "action")} ${asks === 1 ? "waits" : "wait"} for your OK before ${asks === 1 ? "it happens" : "they happen"}.` : ""}`}
+              : `${plural(bp.screens.length, "screen")} and ${plural(bp.agents.length, "AI helper")}${tested ? ", all tried on their test runs first." : ". Their test runs haven't been played yet."}${asks ? ` ${plural(asks, "action")} ${asks === 1 ? "waits" : "wait"} for your OK before ${asks === 1 ? "it happens" : "they happen"}.` : ""}`}
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
