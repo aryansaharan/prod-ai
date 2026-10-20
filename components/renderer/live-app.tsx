@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Lock } from "lucide-react";
@@ -144,8 +144,19 @@ function LiveScreens({ slug, view, viewer, device }: { slug: string; view: Clien
   );
 }
 
+/** A phone-sized window opens the app in its phone layout; the button at the bottom still switches. */
+const PHONE_MQ = "(width < 40rem)";
+function subscribePhone(cb: () => void) {
+  const mq = window.matchMedia(PHONE_MQ);
+  mq.addEventListener("change", cb);
+  return () => mq.removeEventListener("change", cb);
+}
+const isPhone = () => window.matchMedia(PHONE_MQ).matches;
+
 export function LiveApp({ app, view, viewer, publishedAt, slug }: { app: { name: string; primary: string; look?: LookId }; view: ClientView | null; viewer: LiveViewer; publishedAt: string; slug: string }) {
-  const [device, setDevice] = useState<"desktop" | "phone">("desktop");
+  const fits = useSyncExternalStore(subscribePhone, () => (isPhone() ? "phone" : "desktop"), () => "desktop" as const);
+  const [picked, setDevice] = useState<"desktop" | "phone" | null>(null);
+  const device = picked ?? fits;
   const visitor = view?.role === "visitor";
   // The date is formatted in UTC so the server and every visitor's browser render the same text (no hydration mismatch).
   return (
@@ -169,7 +180,7 @@ export function LiveApp({ app, view, viewer, publishedAt, slug }: { app: { name:
             ))}
           <ReportLink slug={slug} />
           {view && (
-            <button onClick={() => setDevice((d) => (d === "desktop" ? "phone" : "desktop"))} className="shrink-0 rounded-md border border-slate-200 bg-white px-2 py-0.5 text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900">
+            <button onClick={() => setDevice(device === "desktop" ? "phone" : "desktop")} className="shrink-0 rounded-md border border-slate-200 bg-white px-2 py-0.5 text-slate-600 transition-colors hover:bg-slate-50 hover:text-slate-900">
               {device === "desktop" ? "Phone view" : "Desktop view"}
             </button>
           )}

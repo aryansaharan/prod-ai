@@ -14,7 +14,7 @@ export default function Terms() {
         <li>Each signed-in person gets free credits every month (300 today). They come back on the 1st, and unused credits don&apos;t carry over.</li>
         <li>Credits have no cash value. They can&apos;t be bought, sold, transferred or exchanged for money. Prod AI takes no payments today.</li>
         <li>Prices, allowances and limits may change. The current prices are shown in Settings before you spend anything.</li>
-        <li>Guests don&apos;t get credits. They use the free starter plans.</li>
+        <li>Guests don&apos;t get credits. A guest&apos;s first app is planned from their own words, free; after that, guests use the free starter plans.</li>
       </ul>
       <h2>Your apps and their data</h2>
       <ul>

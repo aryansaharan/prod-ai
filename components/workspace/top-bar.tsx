@@ -374,6 +374,9 @@ function VersionItems({ current }: { current: CheckpointMeta }) {
  * The person's credits this month, quietly and always the same words: "240 of 300 credits this month" on wide
  * screens, a coin with the same words on narrow ones. A guest has no credits: it says so and links to sign in.
  */
+/** A guest's plan in two words: their free first plan still to come, or starter plans from here. */
+const guestWords = (planLeft: boolean) => (planLeft ? "Guest · 1 free plan" : "Guest · starter plans");
+
 function Credits() {
   const ws = useWorkspace();
   const m = ws.credits;
@@ -384,11 +387,11 @@ function Credits() {
         <TooltipTrigger asChild>
           <Link
             href={`/login?next=${encodeURIComponent(`/p/${ws.project.id}`)}`}
-            aria-label={`Guest · starter plans. ${offer}`}
+            aria-label={`${guestWords(m.guestPlanLeft)}. ${offer}`}
             className="flex h-8 items-center gap-1.5 rounded-md px-2 text-meta text-muted-foreground transition-colors duration-150 ease-paper hover:bg-deep hover:text-foreground max-sm:hidden"
           >
             <Coins className="size-3.5 xl:hidden" aria-hidden />
-            <span className="whitespace-nowrap max-xl:hidden">Guest · starter plans</span>
+            <span className="whitespace-nowrap max-xl:hidden">{guestWords(m.guestPlanLeft)}</span>
           </Link>
         </TooltipTrigger>
         <TooltipContent>{offer}</TooltipContent>
@@ -596,7 +599,7 @@ export function UserMenuView({
                   <span className="block">Sign in to keep this work</span>
                   {credits?.guest && (
                     <span className="block text-meta tabular-nums text-muted-foreground sm:hidden">
-                      Guest · starter plans. Members get {credits.memberAllowance} free credits a month.
+                      {guestWords(credits.guestPlanLeft)}. Members get {credits.memberAllowance} free credits a month.
                     </span>
                   )}
                 </span>

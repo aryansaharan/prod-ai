@@ -7,6 +7,8 @@ import { LandingComposer } from "@/components/landing/landing-composer";
 import { HeroTitle, MarginNote } from "@/components/landing/hero-title";
 import { PencilBox, PlanSketch, RealSketch, WriteSketch } from "@/components/landing/sketches";
 import { DrawOnView } from "@/components/motion/entry-draw";
+import { LookPreview } from "@/components/looks/look-preview";
+import { LOOK_LIST } from "@/lib/looks";
 import { FRAMEWORK_LABEL } from "@/lib/blueprint/describe";
 import { getSessionUser } from "@/lib/auth";
 import { hasSupabase } from "@/lib/env";
@@ -23,7 +25,10 @@ const FRAMEWORKS = Object.values(FRAMEWORK_LABEL);
 
 const WORKS = [
   "Sign in with Google or an email link, or try it as a guest",
-  "Sign in for 300 free credits a month, and Prod AI plans your app from your own words. Guests start from the closest starter plan, free.",
+  "Your first app is planned from your own words, free, even as a guest. Sign in for 300 free credits a month to keep going.",
+  "Making it real really builds it: the plan is checked, the code compiled, and the AI helpers tried on their test runs",
+  "Games, sites and tools are written as real code, built and run in a sealed test space you can try",
+  "Six looks for every app, from crisp and familiar to dark and luminous, switched in one click",
   "Your projects are saved to your account, and only you can see them",
   "AI helpers you can talk to, which ask before anything that can't be undone",
   "Published apps keep real records you can undo, with team screens only the people you invite can open",
@@ -31,7 +36,7 @@ const WORKS = [
 ];
 
 const TEST_MODE = [
-  "Making it real is an animation for now. Your app is drawn from its plan; the code it writes doesn't run yet.",
+  "A business app is shown from its plan: the code written for it is compiled and checked, but doesn't run on its own yet",
   "Pull requests to GitHub stay in a sandbox, and publishing goes to Prod Cloud only",
   "Outside services other than email, like payments and Slack, aren't connected yet: nothing is paid or posted",
 ];
@@ -125,6 +130,25 @@ export default async function Landing() {
               Your app, its AI helpers and what it costs, on one sheet. Write in the margin to change it.
             </figcaption>
           </figure>
+        </section>
+
+        {/* Looks: the six styles an app can wear, drawn as tiny apps. */}
+        <section id="looks" className="mx-auto max-w-6xl scroll-mt-20 px-5 pt-14 sm:px-6 sm:pt-20">
+          <div className="mx-auto max-w-2xl text-center">
+            <h2 className="font-pencil text-title">Then make it yours.</h2>
+            <p className="mt-3 text-lead text-muted-foreground">
+              Six looks, each a whole style: colours, type, corners and the ground your app sits on. Pick one before the first sketch, or switch with one click or a note like &ldquo;make it dark&rdquo;. Your brand colour stays your own.
+            </p>
+          </div>
+          <ul className="mt-10 grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-5 lg:grid-cols-6">
+            {LOOK_LIST.map((l) => (
+              <li key={l.id}>
+                <LookPreview look={l.id} className="rounded-md shadow-hair ring-1 ring-foreground/10" />
+                <p className="mt-3 text-body font-medium">{l.name}</p>
+                <p className="text-meta text-muted-foreground">{l.line}</p>
+              </li>
+            ))}
+          </ul>
         </section>
 
         {/* For developers */}

@@ -5,7 +5,7 @@ import { starterFor } from "@/lib/blueprint/fixtures";
 import { guestStarterNote, matchVertical } from "@/lib/blueprint/match";
 import { streamPlan, type PlanEvent } from "@/lib/llm/stream-plan";
 import { holdModelBudget } from "@/lib/llm/guard";
-import { PRICE, canAfford, outOfCreditsNote } from "@/lib/pricing";
+import { PRICE, canAfford, guestFreePlanLeft, monthlyAllowance, outOfCreditsNote } from "@/lib/pricing";
 import { projectCapMessage } from "@/lib/security/caps";
 import { NOTHING_CONNECTED_NOTE, cleanConnections, connectionsNote, ensureConnections, isNothingOnly, saysNothingConnected, startNotConnected } from "@/lib/llm/draft";
 import { estimate } from "@/lib/blueprint/estimate";
@@ -54,16 +54,19 @@ export async function POST(req: Request) {
   if (full) return Response.json({ error: full, code: "cap" }, { status: 403 });
   // A code app: Claude writes real files (lib/code-apps/generate.ts). Business apps carry on below, exactly as before.
   if (asKind(body.kind) === "code") return codePlanResponse({ user, supa, brief, answers, look: look ?? "auto" });
-  const hold = await holdModelBudget(user, "plan");
+  // A guest's first app is planned from their own words, free; after that a guest starts from a starter plan.
+  const guestFree = user.isAnonymous ? await guestFreePlanLeft(user.id) : false;
+  const hold = await holdModelBudget(user, "plan", undefined, { guestFirstPlan: guestFree });
   if (!hold.ok && hold.reason === "rate") return Response.json({ error: "That's a lot of plans in a few minutes. Wait a little, then try again." }, { status: 429 });
-  // A plan by Claude costs credits; without enough, it starts from the closest starter plan, free.
-  const afford = hold.ok ? await canAfford(user.id, user.isAnonymous, "plan") : null;
+  // A plan by the model costs credits (a guest's first is free); without enough, it starts from the closest starter plan, free.
+  const afford = hold.ok && !guestFree ? await canAfford(user.id, user.isAnonymous, "plan") : null;
   if (hold.ok && afford && !afford.ok) await hold.release();
-  const useModel = hold.ok && Boolean(afford?.ok);
+  const useModel = hold.ok && (guestFree || Boolean(afford?.ok));
+  const price = guestFree ? 0 : PRICE.plan;
   // When no starter plan shares the brief's words, say so plainly instead of calling it the closest.
   const weak = matchVertical(brief).weak;
   const noModelNote = user.isAnonymous
-    ? guestStarterNote(brief)
+    ? guestStarterNote(brief, guestFree ? "unavailable" : "used")
     : afford && !afford.ok
       ? outOfCreditsNote(afford.credits, weak ? "and none of the starter plans is close to this, so this plan starts from a general one" : "this plan starts from the closest starter plan")
       : undefined;
@@ -108,9 +111,11 @@ export async function POST(req: Request) {
             // Plain facts, no model names: who planned it, what it costs, and that nothing is built yet.
             body:
               mode === "live"
-                ? `Planned by Prod AI from your words · ${PRICE.plan} credits. Making it real is free, and nothing is built until you press it.${keysNote}`
+                ? guestFree
+                  ? `Planned by Prod AI from your words, free: a guest's first app is on the house. Sign in for ${monthlyAllowance(false)} free credits a month to plan the next one. Making it real is free, and nothing is built until you press it.${keysNote}`
+                  : `Planned by Prod AI from your words · ${PRICE.plan} credits. Making it real is free, and nothing is built until you press it.${keysNote}`
                 : `Started from ${weak ? "a general starter plan (none is close to this)" : "the closest starter plan"}, free. Making it real is free too, and nothing is built until you press it.${keysNote}`,
-            credits: mode === "live" ? PRICE.plan : 0,
+            credits: mode === "live" ? price : 0,
             checkpointId: cp.id,
           },
         ]);
@@ -123,8 +128,8 @@ export async function POST(req: Request) {
       } finally {
         // A saved plan by Claude costs its price; a failed call or a plan that couldn't be saved costs you nothing.
         // Its real cost is metered either way, for the daily model budget (the provider bills a failed call too).
-        const charged = spent && !spent.failed && projectId ? PRICE.plan : 0;
-        if (spent) await logUsage({ userId: user.id, projectId, kind: "llm", provider: "anthropic", model: spent.model, inputTokens: spent.inputTokens, outputTokens: spent.outputTokens, costUsd: spent.costUsd, credits: charged, meta: { op: "plan", modelCredits: spent.credits, failed: spent.failed, estimated: spent.estimated } });
+        const charged = spent && !spent.failed && projectId ? price : 0;
+        if (spent) await logUsage({ userId: user.id, projectId, kind: "llm", provider: "anthropic", model: spent.model, inputTokens: spent.inputTokens, outputTokens: spent.outputTokens, costUsd: spent.costUsd, credits: charged, meta: { op: "plan", modelCredits: spent.credits, failed: spent.failed, estimated: spent.estimated, ...(guestFree && !spent.failed && projectId && { guestFree: true }) } });
         if (useModel) await hold.release();
       }
       controller.close();

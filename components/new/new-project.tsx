@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Info, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { questionsFor, renderAnswers, type Question } from "@/lib/blueprint/questions";
-import { guestStarterNote, matchVertical } from "@/lib/blueprint/match";
+import { guestStarterNote, matchVertical, starterName } from "@/lib/blueprint/match";
 import { WritingSheet } from "@/components/home/writing-sheet";
 import { MAX_BRIEF, MIN_BRIEF } from "@/components/home/brief-limits";
 import { PencilBox } from "@/components/landing/sketches";
@@ -57,20 +57,27 @@ export function Steps({ at, kind = "business" }: { at: number; kind?: AppKind })
 /** Back to this page with the note still written, after signing in. */
 const comeBack = (brief: string) => (brief.trim() ? `/new?prompt=${encodeURIComponent(brief.trim().slice(0, MAX_BRIEF))}` : "/new");
 
-/** Said once, before anything is planned: guests get a starter plan; signing in gets Claude. */
-function GuestNote({ brief }: { brief: string }) {
-  return (
+/** Said once, before anything is planned: a guest's first app is planned from their words, free; after that, a starter plan. */
+function GuestNote({ brief, planLeft }: { brief: string; planLeft: boolean }) {
+  const signIn = (
+    <Link href={signInHref(comeBack(brief))} className="text-foreground underline decoration-dotted underline-offset-4">
+      Sign in
+    </Link>
+  );
+  return planLeft ? (
     <p>
-      As a guest you start from the closest starter plan.{" "}
-      <Link href={signInHref(comeBack(brief))} className="text-foreground underline decoration-dotted underline-offset-4">
-        Sign in
-      </Link>{" "}
-      and Prod AI plans it from your own words.
+      As a guest, your first app is planned from your own words, free. {signIn} for free credits every month to keep going.
+    </p>
+  ) : (
+    <p>
+      You&apos;ve used your free guest plan, so new apps start from the closest starter plan. {signIn} and Prod AI plans it from your own words.
     </p>
   );
 }
 
-export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = null }: { initialPrompt: string; llm: "live" | "offline"; isGuest?: boolean; capMessage?: string | null }) {
+export function NewProject({ initialPrompt, llm, isGuest = false, guestPlanLeft = false, capMessage = null }: { initialPrompt: string; llm: "live" | "offline"; isGuest?: boolean; guestPlanLeft?: boolean; capMessage?: string | null }) {
+  // A guest whose free first plan is used gets a starter plan: said plainly, right above the button, before they press it.
+  const starterOnly = isGuest && !guestPlanLeft;
   const [step, setStep] = useState<Step>(initialPrompt.trim().length >= MIN_BRIEF ? "questions" : "describe");
   const [brief, setBrief] = useState(initialPrompt);
   const [answers, setAnswers] = useState<Record<string, string>>({});
@@ -198,7 +205,7 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
         eyebrow={<Steps at={2} />}
         onRetry={() => plan(false)}
         // The same note the server sends a guest: the closest starter, or plainly a general one when none is close.
-        expectedNote={isGuest ? guestStarterNote(brief) : undefined}
+        expectedNote={starterOnly ? guestStarterNote(brief) : undefined}
         signInNext={isGuest ? comeBack(brief) : null}
       />
     );
@@ -247,7 +254,7 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
           />
           {isGuest && (
             <div className="mt-4 text-meta text-muted-foreground">
-              <GuestNote brief={brief} />
+              <GuestNote brief={brief} planLeft={guestPlanLeft} />
             </div>
           )}
         </>
@@ -369,6 +376,19 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
               </div>
             </div>
 
+            {starterOnly && kind !== "code" && (
+              <div className="flex gap-2.5 border-t border-dashed border-hairline-hi bg-sticky/60 px-5 py-4 text-body text-foreground sm:px-8">
+                <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
+                <p>
+                  You&apos;ve used your free guest plan, so this sketch starts from {starterName(brief)}, not your own words. Reshape it with notes, or{" "}
+                  <Link href={signInHref(comeBack(brief))} className="font-medium underline decoration-dotted underline-offset-4">
+                    sign in
+                  </Link>{" "}
+                  and Prod AI plans it from your words.
+                </p>
+              </div>
+            )}
+
             <div className="flex flex-wrap items-center gap-3 border-t border-dashed border-hairline-hi px-5 py-4 sm:px-8">
               {kind === "code" ? (
                 isGuest ? (
@@ -415,7 +435,7 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
             ) : (
               <p>Sketching is free. Nothing is built until you say so, and you see the price first.</p>
             )}
-            {isGuest && kind !== "code" && <GuestNote brief={brief} />}
+            {isGuest && kind !== "code" && guestPlanLeft && <GuestNote brief={brief} planLeft />}
           </div>
         </>
       )}

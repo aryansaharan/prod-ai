@@ -37,6 +37,8 @@ const usd = (name: string, fallback: number) => {
 export function modelBudgets() {
   return {
     guest: usd("LLM_DAILY_USD_GUEST", 0),
+    // A guest's first app is planned from their own words (lib/pricing.ts guestFreePlanLeft): room for that one plan.
+    guestFirstPlan: usd("LLM_FIRST_PLAN_USD_GUEST", 0.6),
     member: usd("LLM_DAILY_USD_MEMBER", 1),
     site: usd("LLM_DAILY_USD_SITE", 10),
   };
@@ -75,21 +77,21 @@ export function planFitsModel(bp: unknown): boolean {
 
 const NO_HOLD: ModelHold = { ok: false, reason: "budget" };
 
-export async function holdModelBudget(user: SessionUser, op: ModelOp, estimateUsd?: number): Promise<ModelHold> {
-  return holdModelBudgetAs({ payerId: user.id, payerIsGuest: user.isAnonymous, rateKey: `user:${user.id}`, op, estimateUsd });
+export async function holdModelBudget(user: SessionUser, op: ModelOp, estimateUsd?: number, opts: { guestFirstPlan?: boolean } = {}): Promise<ModelHold> {
+  return holdModelBudgetAs({ payerId: user.id, payerIsGuest: user.isAnonymous, rateKey: `user:${user.id}`, op, estimateUsd, guestFirstPlan: opts.guestFirstPlan });
 }
 
 /**
  * The same hold when the person asking isn't the one who pays: a published app's AI helper is paid
  * for by the app's owner, while the rate limit follows whoever is typing (a team member or a visitor's network).
  */
-export async function holdModelBudgetAs(p: { payerId: string; payerIsGuest: boolean; rateKey: string; op: ModelOp; estimateUsd?: number }): Promise<ModelHold> {
+export async function holdModelBudgetAs(p: { payerId: string; payerIsGuest: boolean; rateKey: string; op: ModelOp; estimateUsd?: number; guestFirstPlan?: boolean }): Promise<ModelHold> {
   // Without the admin connection nothing can be metered, so nothing is spent.
   if (!hasAdmin()) return NO_HOLD;
   const spec = OPS[p.op];
   if (!(await withinLimit(`${p.rateKey}:${p.op}`, spec.max, spec.windowSeconds))) return { ok: false, reason: "rate" };
   const budgets = modelBudgets();
-  const cap = p.payerIsGuest ? budgets.guest : budgets.member;
+  const cap = p.payerIsGuest ? (p.guestFirstPlan ? Math.max(budgets.guest, budgets.guestFirstPlan) : budgets.guest) : budgets.member;
   if (cap <= 0 || budgets.site <= 0) return NO_HOLD;
   const admin = adminClient();
   const { data, error } = await admin.rpc("model_budget_hold", {

@@ -706,3 +706,27 @@ body:has([data-crisp])::before {
     animation: none;
   }
 }
+
+/* Toasts keep clear of the open margin, so a message never sits on the note box while someone writes. */
+@media (width >= 64rem) {
+  body:has([data-margin="open"]) [data-sonner-toaster][data-x-position="right"] {
+    right: calc(288px + 20px) !important;
+  }
+}
+@media (width >= 80rem) {
+  body:has([data-margin="open"]) [data-sonner-toaster][data-x-position="right"] {
+    right: calc(304px + 20px) !important;
+  }
+}
+@media (width >= 1400px) {
+  body:has([data-margin="open"]) [data-sonner-toaster][data-x-position="right"] {
+    right: calc(340px + 20px) !important;
+  }
+}
+/* On a phone the margin is a bottom sheet: while it's open, toasts show at the top instead. */
+@media (width < 64rem) {
+  body:has([data-margin="open"]) [data-sonner-toaster] {
+    top: max(12px, env(safe-area-inset-top)) !important;
+    bottom: auto !important;
+  }
+}
