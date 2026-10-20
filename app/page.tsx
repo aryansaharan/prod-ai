@@ -25,7 +25,7 @@ const FRAMEWORKS = Object.values(FRAMEWORK_LABEL);
 
 const WORKS = [
   "Sign in with Google or an email link, or try it as a guest",
-  "Your first app is planned from your own words, free, even as a guest. Sign in for 300 free credits a month to keep going.",
+  "Your first app planned from your own words, free, even as a guest, and 300 free credits a month once you sign in",
   "Making it real really builds it: the plan is checked, the code compiled, and the AI helpers tried on their test runs",
   "Games, sites and tools are written as real code, built and run in a sealed test space you can try",
   "Six looks for every app, from crisp and familiar to dark and luminous, switched in one click",

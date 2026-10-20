@@ -4,7 +4,7 @@ export const metadata = { title: "Privacy" };
 
 export default function Privacy() {
   return (
-    <LegalPage title="Privacy policy" updated="October 5, 2026">
+    <LegalPage title="Privacy policy" updated="October 20, 2026">
       <p>Prod AI is made and run by Aryan Saharan. This page says what it stores, why, and who else sees it.</p>
       <h2>Your account</h2>
       <ul>

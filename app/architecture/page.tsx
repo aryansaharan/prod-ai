@@ -55,7 +55,7 @@ const TODAY: { part: string; status: { label: string; kind: Status }[]; today: s
   {
     part: "Planner",
     status: [{ label: "Real", kind: "real" }],
-    today: "The model picks the kind of app. For a business app it plans a structured Blueprint, streamed live, and code expands it deterministically and validates every reference; for anything else it writes real React files, streamed file by file. Guests start from a starter plan",
+    today: "The model picks the kind of app. For a business app it plans a structured Blueprint, streamed live, and code expands it deterministically and validates every reference; for anything else it writes real React files, streamed file by file. A guest's first app is planned the same way; after that, guests start from a starter plan",
     prod: "Same contract, routed through the model gateway",
   },
   {

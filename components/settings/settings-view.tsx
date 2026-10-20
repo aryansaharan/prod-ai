@@ -269,12 +269,12 @@ export function SettingsView({
 
         <section id="team" className="scroll-mt-24">
           <h2 className="font-pencil text-section">Team &amp; roles</h2>
-          <p className="mt-2 text-ui text-muted-foreground">Not everyone should be able to change everything.</p>
+          <p className="mt-2 text-ui text-muted-foreground">Not everyone should be able to change everything. The two teammates below are examples of how roles work; a published app&apos;s team is invited from its Publish page.</p>
           <div className="panel mt-5 rounded-md">
             <ul className="divide-y divide-hairline text-ui">
               <li className="flex items-center gap-3 px-4 py-2.5"><span className="min-w-0 flex-1 truncate">{user.name}{user.email ? ` · ${user.email}` : ""}</span><span className="font-medium">Owner</span></li>
-              <li className="flex items-center gap-3 px-4 py-2.5"><span className="min-w-0 flex-1 truncate">Priya Raman · Platform engineer</span><span className="text-muted-foreground">Editor</span></li>
-              <li className="flex items-center gap-3 px-4 py-2.5"><span className="min-w-0 flex-1 truncate">Maya Singh · Claims lead</span><span className="text-muted-foreground">Viewer</span></li>
+              <li className="flex items-center gap-3 px-4 py-2.5"><span className="min-w-0 flex-1 truncate">Priya Raman · Platform engineer</span><Pill>example</Pill><span className="text-muted-foreground">Editor</span></li>
+              <li className="flex items-center gap-3 px-4 py-2.5"><span className="min-w-0 flex-1 truncate">Maya Singh · Claims lead</span><Pill>example</Pill><span className="text-muted-foreground">Viewer</span></li>
             </ul>
             <dl className="grid gap-3 border-t border-hairline bg-canvas/60 px-4 py-3 md:grid-cols-3">
               {[

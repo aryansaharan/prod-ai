@@ -138,7 +138,7 @@ export const supportFixture: BlueprintInput = {
       icon: "send",
       purpose: "Read and approve every reply before it is emailed to a customer.",
       plain:
-        "Every reply Reply Drafter writes waits here with the articles it used and how confident it is. Nothing is emailed to a customer until someone on the team presses Approve, or sends it back with a note.",
+        "Every reply that Reply Drafter writes waits here with the articles it used and how confident it is. Nothing is emailed to a customer until someone on the team presses Approve, or sends it back with a note.",
       layout: "single",
       audience: "team",
       status: "planned",
@@ -470,7 +470,7 @@ export const supportFixture: BlueprintInput = {
       id: "reply",
       name: "Reply",
       plural: "Replies",
-      plain: "A reply Reply Drafter has written for a ticket, waiting for a person to approve it.",
+      plain: "A reply that Reply Drafter has written for a ticket, waiting for a person to approve it.",
       fields: [
         { name: "ticket_no", label: "Ticket #", type: "string" },
         { name: "customer", label: "Customer", type: "string" },

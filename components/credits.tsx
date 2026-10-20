@@ -29,7 +29,7 @@ export function PriceList({ className }: { className?: string }) {
         ))}
       </ul>
       <p className="mt-2 text-meta text-muted-foreground">
-        Free: making it real, publishing, quotes, rule-based changes, starter plans and scripted answers. A call that fails is never charged. On your published app, visitors&apos; messages use your credits.
+        Free: a guest&apos;s first plan, making it real, publishing, quotes, rule-based changes, starter plans and scripted answers. A call that fails is never charged. On your published app, visitors&apos; messages use your credits.
       </p>
     </div>
   );
