@@ -475,7 +475,7 @@ export function codePlaceholderBlueprint(app: CodeApp): Blueprint {
       name: title,
       tagline: tagline || title,
       vertical: "custom",
-      plain: `${kind || "An app"}, written by Claude as real code.`,
+      plain: `${kind || "An app"}, written by Prod AI as real code.`,
       theme: { primary: "#0F766E", radius: "md", density: "comfortable", mode: "light" },
       auth: { enabled: false, providers: [] },
       region: "us",
@@ -497,10 +497,10 @@ export function codePlaceholderBlueprint(app: CodeApp): Blueprint {
     agents: [
       {
         id: "claude",
-        name: "Claude",
+        name: "Prod AI",
         role: "Wrote this app's code",
         avatarHue: 172,
-        plain: "Claude wrote this app's files. The app has no AI helpers of its own.",
+        plain: "Prod AI wrote this app's files. The app has no AI helpers of its own.",
         jobDescription: "Writes and changes this app's code when asked.",
         rules: ["Changes only what's asked for."],
         tools: [],
@@ -536,7 +536,7 @@ const BUSINESS_ACTION: CodeAction = { id: "business", label: "Start from a busin
 /** A plain no, as the one event of a stream, with the ways on (sign in, or the business starter). */
 function refusal(message: string, code: string, actions: CodeAction[]): Response {
   const lines = [
-    { t: "status", mode: "offline", kind: "code", text: "Claude isn't writing this one" },
+    { t: "status", mode: "offline", kind: "code", text: "Prod AI isn't writing this one" },
     { t: "error", message, code, actions },
   ] satisfies CodePlanEvent[];
   return new Response(lines.map((l) => JSON.stringify(l)).join("\n") + "\n", { headers: NDJSON });
@@ -558,7 +558,7 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
       [{ id: "sign-in", label: "Sign in", href: "/login?next=%2Fnew" }, BUSINESS_ACTION],
     );
   const m = getModel();
-  if (!m) return refusal("Writing an app as real code needs Claude, which isn't set up here. You can start from a business starter, free.", "code-unavailable", [BUSINESS_ACTION]);
+  if (!m) return refusal("Writing an app as real code needs live AI, which isn't set up here. You can start from a business starter, free.", "code-unavailable", [BUSINESS_ACTION]);
 
   const prompt = writePrompt(brief, answers);
   // The hold covers the worst case of the write itself; a fix, if one is needed, is held on its own after the write is metered.
@@ -567,10 +567,10 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
   const afford = hold.ok ? await canAfford(user.id, user.isAnonymous, "codeApp") : null;
   if (hold.ok && afford && !afford.ok) await hold.release();
   if (!hold.ok)
-    return refusal("Claude has done a lot for this account today, so it can't write a whole app right now. It comes back within 24 hours. You can start from a business starter now, free.", "code-unavailable", [BUSINESS_ACTION]);
+    return refusal("Prod AI has done a lot for this account today, so it can't write a whole app right now. It comes back within 24 hours. You can start from a business starter now, free.", "code-unavailable", [BUSINESS_ACTION]);
   if (!afford?.ok)
     return refusal(
-      `Writing an app as real code takes ${PRICE.codeApp} credits. ${outOfCreditsNote(afford!.credits, "Claude can't write this one")}`,
+      `Writing an app as real code takes ${PRICE.codeApp} credits. ${outOfCreditsNote(afford!.credits, "Prod AI can't write this one")}`,
       "code-credits",
       [BUSINESS_ACTION],
     );
@@ -601,12 +601,12 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
       const sent = new Map<string, string>();
       const started = Date.now();
       try {
-        send({ t: "status", mode: "live", kind: "code", model: m.id, text: "Claude is planning the app" });
+        send({ t: "status", mode: "live", kind: "code", model: m.id, text: "Prod AI is planning the app" });
         const write = await streamWrite(m, prompt, user.id, send, sent);
         await meter(write.spent, "write");
         await releaseWrite();
         if (!write.raw) {
-          send({ t: "error", message: "Claude couldn't finish writing the app. Nothing was charged. Try again.", code: "code-failed", actions: [{ id: "retry", label: "Try again" }, BUSINESS_ACTION] });
+          send({ t: "error", message: "Prod AI couldn't finish writing the app. Nothing was charged. Try again.", code: "code-failed", actions: [{ id: "retry", label: "Try again" }, BUSINESS_ACTION] });
           return;
         }
         send({ t: "status", mode: "live", kind: "code", model: m.id, text: "Checking the files" });
@@ -618,12 +618,12 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
           const fixText = fixPrompt(base as CodeApp, { checks: checked.errors } satisfies ProblemReport);
           const fixMs = Math.min(FIX_TIMEOUT_MS, PLAN_DEADLINE_MS - (Date.now() - started));
           if (fixMs < MIN_FIX_MS) {
-            send({ t: "error", message: "Claude took too long writing the app, so it wasn't saved. Nothing was charged. Try again, maybe with a smaller first version.", code: "code-failed", actions: [{ id: "retry", label: "Try again" }, BUSINESS_ACTION] });
+            send({ t: "error", message: "Prod AI took too long writing the app, so it wasn't saved. Nothing was charged. Try again, maybe with a smaller first version.", code: "code-failed", actions: [{ id: "retry", label: "Try again" }, BUSINESS_ACTION] });
             return;
           }
           fixHold = await holdModelBudget(user, "change", promptHoldUsd(FIX_INSTRUCTIONS.length + fixText.length, EDIT_MAX_OUTPUT));
           if (!fixHold.ok) {
-            const why = write.error ? "Claude couldn't finish writing the app in one go" : "Claude's app didn't pass Prod AI's checks";
+            const why = write.error ? "Prod AI couldn't finish writing the app in one go" : "The app didn't pass Prod AI's checks";
             send({ t: "error", message: `${why}, and there's no room left today to fix it. Nothing was charged. Try again tomorrow, maybe with a smaller first version.`, code: "code-failed", actions: [BUSINESS_ACTION] });
             return;
           }
@@ -634,7 +634,7 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
           if (fix.edit) checked = await checkApp(applyEdit(base, fix.edit));
           if (!checked.ok) {
             console.warn("[code-apps] the fix didn't pass the checks either:", checked.errors.slice(0, 5));
-            send({ t: "error", message: `Claude's app didn't pass Prod AI's checks (${checked.errors[0]}). Nothing was charged. Try again.`, code: "code-failed", actions: [{ id: "retry", label: "Try again" }, BUSINESS_ACTION] });
+            send({ t: "error", message: `The app didn't pass Prod AI's checks (${checked.errors[0]}). Nothing was charged. Try again.`, code: "code-failed", actions: [{ id: "retry", label: "Try again" }, BUSINESS_ACTION] });
             return;
           }
         }
@@ -649,7 +649,7 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
           const project = await createProject(supa, { ownerId: user.id, name: app.manifest.title, vertical: "custom", brief, blueprint: codePlaceholderBlueprint(app), buildState: "draft", kind: "code", code: app });
           projectId = project.id;
           const cp = await addCheckpoint(supa, project.id, {
-            label: "Written by Claude",
+            label: "Written by Prod AI",
             kind: "blueprint",
             blueprint: project.blueprint,
             code: app,
@@ -665,7 +665,7 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
                 kind: "work_order",
                 title: `Wrote ${app.manifest.kind || "the app"} in ${count(app.files.length, "file")}`,
                 // Plain facts, no model names: who wrote it, what it cost, and what happens next.
-                body: `Written by Claude from your words · ${PRICE.codeApp} credits. Prod AI builds it for real next, free.${dataWords(app.manifest)}`,
+                body: `Written by Prod AI from your words · ${PRICE.codeApp} credits. Prod AI builds it for real next, free.${dataWords(app.manifest)}`,
                 credits: PRICE.codeApp,
                 checkpointId: cp.id,
                 meta: { kind: "code", files: app.files.length },

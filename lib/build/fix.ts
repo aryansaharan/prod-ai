@@ -80,7 +80,7 @@ export function buildFixPlan(bp: Blueprint, runs: TestRun[]): FixPlan | null {
   if (ops.length)
     options.push({
       id: "a",
-      label: short.length === 1 ? short[0] : `Apply the ${short.length} fixes Claude suggests`,
+      label: short.length === 1 ? short[0] : `Apply the ${short.length} suggested fixes`,
       narration: said.join(" "),
       ops,
       changelog: changelog.join(" "),

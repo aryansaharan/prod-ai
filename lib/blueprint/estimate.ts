@@ -53,7 +53,7 @@ export type TimeLabel = { real: string; here: string; label: string };
 export function buildTimeLabel(runs: number): TimeLabel {
   const ms = 5000 + Math.ceil(runs / 3) * 20_000;
   const real = runs ? `about ${durationWords(ms)}` : "a few seconds";
-  const here = runs ? `${runs} test run${runs === 1 ? "" : "s"} played by Claude` : "no test runs";
+  const here = runs ? `${runs} test run${runs === 1 ? "" : "s"} played by the AI` : "no test runs";
   return { real, here, label: `${real} · ${here}` };
 }
 

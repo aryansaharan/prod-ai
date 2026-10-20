@@ -118,8 +118,8 @@ export async function runRehearsals(projectId: string, agentId: string): Promise
   if (!agent) return { ok: false, error: "Agent not found" };
   const total = agent.rehearsals.length;
   if (!total) return { ok: false, error: "Add a test run first" };
-  if (user.isAnonymous) return { ok: false, error: `Test runs are played by Claude, so they need you signed in (${PRICE.testRun} credits each).` };
-  if (!getModel() || !planFitsModel(project.blueprint)) return { ok: false, error: "Claude isn't available right now. Try again in a little while." };
+  if (user.isAnonymous) return { ok: false, error: `Test runs are played by the AI, so they need you signed in (${PRICE.testRun} credits each).` };
+  if (!getModel() || !planFitsModel(project.blueprint)) return { ok: false, error: "The AI isn't available right now. Try again in a little while." };
   const cost = total * PRICE.testRun;
   const credits = await creditsThisMonth(user.id, false);
   if (credits.left < cost) return { ok: false, error: outOfCreditsNote(credits, `the ${total} test runs (${cost} credits) can't be played`) };
@@ -142,7 +142,7 @@ export async function runRehearsals(projectId: string, agentId: string): Promise
     played++;
     if (run.outcome === "pass") passed++;
     const r = a?.rehearsals.find((x) => x.id === run.rehearsalId);
-    if (r) r.history = [...r.history, { at: run.at, pass: run.outcome === "pass", note: `Claude: ${run.reason}` }].slice(-10);
+    if (r) r.history = [...r.history, { at: run.at, pass: run.outcome === "pass", note: run.reason }].slice(-10);
   }
   next_.estimate = estimate(next_);
   await updateProject(supa, projectId, { blueprint: next_ });
@@ -153,7 +153,7 @@ export async function runRehearsals(projectId: string, agentId: string): Promise
       lane: "checked",
       kind: "rehearsal",
       title: `Test runs for ${agent.name} · ${passed} of ${played} passed`,
-      body: `Played by Claude and judged${charged ? ` · ${charged} credits` : ""}.${errors ? ` ${errors} couldn't run, so ${errors === 1 ? "it wasn't" : "they weren't"} charged.` : ""}${passed < played ? " Open the failed one to see what happened." : ""}`,
+      body: `Played by the AI and judged${charged ? ` · ${charged} credits` : ""}.${errors ? ` ${errors} couldn't run, so ${errors === 1 ? "it wasn't" : "they weren't"} charged.` : ""}${passed < played ? " Open the failed one to see what happened." : ""}`,
       credits: 0,
       objectRef: { type: "agent", id: agentId },
     },

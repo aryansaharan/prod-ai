@@ -98,7 +98,7 @@ export function FixNote({
         {stuck ? (
           <>
             <p className="min-w-0 flex-1 basis-64 text-body text-foreground">
-              Prod AI has tried {MAX_REPAIRS} fixes in a row and it still breaks. Describe what you want it to do in a note, in your own words, and Claude starts from that.
+              Prod AI has tried {MAX_REPAIRS} fixes in a row and it still breaks. Describe what you want it to do in a note, in your own words, and Prod AI starts from that.
             </p>
             <Button size="lg" onClick={onNote}>
               <NotebookPen aria-hidden /> Write a note
@@ -111,7 +111,7 @@ export function FixNote({
               {!repairing && <span className="font-normal opacity-80">· free</span>}
             </Button>
             <p className="min-w-0 flex-1 basis-56 text-meta text-muted-foreground">
-              Claude reads the error and the files, fixes them and saves a new version. Free, never charged. Then it builds again.
+              Prod AI reads the error and the files, fixes them and saves a new version. Free, never charged. Then it builds again.
               {repairs > 0 ? ` Fix ${repairs + 1} of ${MAX_REPAIRS}.` : ""}
             </p>
           </>

@@ -54,7 +54,7 @@ export function preflight(
     {
       id: "rehearsals",
       label: "Test runs pass",
-      plain: "Claude has played each AI helper through its test conversations.",
+      plain: "Each AI helper has been played through its test conversations.",
       // Test runs are played by Claude, so a guest (or anyone who skipped them) has none: that warns, it doesn't block.
       // Played ones must mostly pass: under 80% of those played blocks publishing.
       status: !built ? "fail" : reh.played && reh.rate < 0.8 ? "fail" : reh.failing || reh.notRun || reh.unrehearsed.length ? "warn" : "pass",
@@ -164,7 +164,7 @@ function publicCheck(bp: Blueprint, hidden: string[], helpersOn: boolean): Prefl
   if (hiddenNames.length) parts.push(`Hidden from public pages: ${listWords(hiddenNames)}.`);
   if (sum.helpers.length) {
     const names = listWords(sum.helpers.map((h) => h.name));
-    parts.push(helpersOn ? `Visitors can talk to ${names}. Each message Claude answers uses ${PRICE.helperMessage} of your credits.` : `Visitors can't talk to ${names} unless you turn that on.`);
+    parts.push(helpersOn ? `Visitors can talk to ${names}. Each message the AI answers uses ${PRICE.helperMessage} of your credits.` : `Visitors can't talk to ${names} unless you turn that on.`);
   }
   return { ...base, status: "info", detail: parts.join(" ") };
 }
@@ -203,7 +203,7 @@ export function rehearsalSummary(bp: Blueprint) {
   const rate = ran.length ? passing / ran.length : 0;
   const parts: string[] = [];
   if (ran.length) parts.push(`${passing} of ${ran.length} played ${ran.length === 1 ? "passes" : "pass"} on their latest run (${Math.round(rate * 100)}%).`);
-  else if (all.length) parts.push(`None of the ${all.length} test runs has been played yet. Claude plays them (${PRICE.testRun} credits each); you can publish without them.`);
+  else if (all.length) parts.push(`None of the ${all.length} test runs has been played yet. The AI plays them (${PRICE.testRun} credits each); you can publish without them.`);
   else parts.push("No AI helper has any test runs yet. Add them in AI helpers › Tests & reliability.");
   if (failing) parts.push(`${failing} failing.`);
   if (unrehearsed.length && unrehearsed.length < bp.agents.length) parts.push(`Not played yet: ${unrehearsed.join(", ")}.`);

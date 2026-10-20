@@ -136,7 +136,7 @@ export function CodeAppBrowser({ fromId, toId }: { fromId: string | null; toId: 
         ) : (
           <div className="min-h-0 flex-1 overflow-y-auto px-3 pb-3">
             {ws.checkpoints.length < 2 ? (
-              <p className="text-meta text-muted-foreground">There&apos;s one version so far. Each change Claude makes, and each fix, saves a new one to compare.</p>
+              <p className="text-meta text-muted-foreground">There&apos;s one version so far. Each change Prod AI makes, and each fix, saves a new one to compare.</p>
             ) : (
               <>
                 <VersionPicker which="from" value={fromId ?? ""} onChange={(id) => setCompare("from", id)} />
@@ -216,7 +216,7 @@ export function CodeAppBrowser({ fromId, toId }: { fromId: string | null; toId: 
             {file ? (
               <CodeView code={file.content} lang={langOf(file.path, { css: true })} highlightLines={errorLines} className="min-h-0 flex-1" />
             ) : (
-              <p className="p-6 text-ui text-muted-foreground">Claude hasn&apos;t written any files for this app yet.</p>
+              <p className="p-6 text-ui text-muted-foreground">Prod AI hasn&apos;t written any files for this app yet.</p>
             )}
           </>
         ) : (

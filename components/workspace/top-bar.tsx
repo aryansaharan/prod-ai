@@ -48,7 +48,7 @@ const HOOD = [
  */
 const CODE_TABS = new Set(["", "ship"]);
 const CODE_HOOD: Partial<Record<(typeof HOOD)[number]["section"], { label: string; hint: string }>> = {
-  code: { label: "Code", hint: "Every file Claude wrote, what changed between versions, and a download that runs anywhere" },
+  code: { label: "Code", hint: "Every file Prod AI wrote, what changed between versions, and a download that runs anywhere" },
 };
 
 const hrefFor = (base: string, section: string) => (section ? `${base}/${section}` : base);

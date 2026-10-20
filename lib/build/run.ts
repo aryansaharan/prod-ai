@@ -88,7 +88,7 @@ export async function runBuild(ctx: Ctx, projectId: string, body: BuildBody, dep
         lane: "thought",
         kind: "work_order",
         title: "You pressed Make it real",
-        body: `Prod AI checks the plan, writes and compiles the code for ${count(bp.screens.length, "screen")} and ${count(bp.agents.length, "AI helper")}${report.tests === "claude" ? `, and Claude plays ${count(runs, "test run")} (${runs * PRICE.testRun} credits)` : ""}.`,
+        body: `Prod AI checks the plan, writes and compiles the code for ${count(bp.screens.length, "screen")} and ${count(bp.agents.length, "AI helper")}${report.tests === "claude" ? `, and the AI plays ${count(runs, "test run")} (${runs * PRICE.testRun} credits)` : ""}.`,
         credits: 0,
       },
     ]);
@@ -287,17 +287,17 @@ class Work {
       const detail: Record<Exclude<TestsMode, "claude">, string> = {
         none: "The plan has no test runs. Add some in AI helpers › Tests & reliability.",
         skipped: `The ${count(n, "test run")} weren't played this time. Play them any time from AI helpers › Tests & reliability (${PRICE.testRun} credits each).`,
-        guest: `Test runs are played by Claude, so they need you signed in (${PRICE.testRun} credits each; signing in gives you free credits every month).`,
+        guest: `Test runs are played by the AI, so they need you signed in (${PRICE.testRun} credits each; signing in gives you free credits every month).`,
         credits: `The ${count(n, "test run")} need ${n * PRICE.testRun} credits and you have ${Math.floor(credits?.left ?? 0)} left, so they're skipped. Run them later from AI helpers.`,
         cap: `The ${count(n, "test run")} would pass this project's monthly spending limit, so they're skipped. Raise it in Settings.`,
-        offline: "Claude isn't available right now, so the test runs are skipped. Run them later from AI helpers.",
+        offline: "The AI isn't available right now, so the test runs are skipped. Run them later from AI helpers.",
       };
       await this.step({ id, label: n ? `Skipping ${count(n, "test run")}` : "No test runs to play" }, async () => ({ state: "skipped", detail: detail[mode] }));
       return;
     }
 
-    const label = again ? `Playing ${count(planned.length, "test run")} again with the fix` : `Claude is playing ${count(planned.length, "test run")}`;
-    this.ctx.emit({ t: "step", step: { id, label, state: "running", detail: "Each one is a practice conversation: Claude plays the helper, then a second call checks it against what should happen." } });
+    const label = again ? `Playing ${count(planned.length, "test run")} again with the fix` : `Playing ${count(planned.length, "test run")}`;
+    this.ctx.emit({ t: "step", step: { id, label, state: "running", detail: "Each one is a practice conversation: the AI plays the helper, then a second call checks it against what should happen." } });
     const started = Date.now();
     const have = new Set(this.report.runs.filter((r) => Boolean(r.again) === Boolean(again)).map(runKey));
     const todo = planned.filter((p) => !have.has(runKey(p)));
@@ -331,7 +331,7 @@ class Work {
     const credits = mine.reduce((n, r) => n + r.credits, 0);
     const step: BuildStep = {
       id,
-      label: again ? "Played the failed test runs again" : `Claude played ${count(mine.length, "test run")}`,
+      label: again ? "Played the failed test runs again" : `Played ${count(mine.length, "test run")}`,
       state: failed || errors ? "warn" : "done",
       detail: `${passed} of ${mine.length} passed${failed ? ` · ${failed} failed` : ""}${errors ? ` · ${errors} couldn't run (not charged)` : ""} · ${credits ? `${credits} credits` : "free"}`,
       ms: Date.now() - started,
@@ -416,7 +416,7 @@ class Work {
         const run = latest.get(runKey({ agentId: a.id, rehearsalId: r.id }));
         if (!run) continue;
         if (run.outcome === "pass") passed++;
-        r.history = [...r.history, { at: now, pass: run.outcome === "pass", note: `Claude: ${run.reason}` }].slice(-10);
+        r.history = [...r.history, { at: now, pass: run.outcome === "pass", note: run.reason }].slice(-10);
       }
     const played = latest.size;
     this.report.phase = "done";
@@ -441,7 +441,7 @@ class Work {
         lane: "checked",
         kind: "rehearsal",
         title: played ? `Test runs: ${passed} of ${played} passed` : "Test runs: not played",
-        body: played ? `Played by Claude and judged${this.report.credits ? ` · ${this.report.credits} credits` : ""}.${passed < played ? " Open AI helpers › Tests & reliability to see what failed." : ""}` : (this.report.steps.find((s) => s.id === "tests")?.detail ?? ""),
+        body: played ? `Played by the AI and judged${this.report.credits ? ` · ${this.report.credits} credits` : ""}.${passed < played ? " Open AI helpers › Tests & reliability to see what failed." : ""}` : (this.report.steps.find((s) => s.id === "tests")?.detail ?? ""),
         checkpointId: cp.id,
       },
     ]);

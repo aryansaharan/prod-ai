@@ -83,7 +83,7 @@ export const prod = {
   },
   ai: {
     async ask() {
-      throw new Error("AI isn't connected in this copy of the app. Inside Prod AI, prod.ai.ask answers with Claude.");
+      throw new Error("AI isn't connected in this copy of the app. Inside Prod AI, prod.ai.ask answers with live AI.");
     },
   },
   user: () => ({ role: "owner", name: "You" }),

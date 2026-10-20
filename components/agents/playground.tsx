@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useRef, useState, useTransition } from "react";
-import { noEmDash } from "@/lib/text";
+import { modelLabel, noEmDash } from "@/lib/text";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { ArrowUp, CircleAlert, Loader2, RotateCcw } from "lucide-react";
@@ -22,9 +22,9 @@ import { Markdown } from "@/components/markdown";
 export type PlaygroundMode = "live" | "offline" | "guest" | "credits" | "budget";
 
 const SCRIPT_LABEL: Record<Exclude<PlaygroundMode, "live" | "budget">, { label: string; why: string }> = {
-  offline: { label: "Practice script · offline", why: "Claude isn't set up here, so a free practice script answers." },
-  guest: { label: "Practice script · sign in for live AI", why: `Guests get a free practice script. Signed in, Claude answers for ${PRICE.helperMessage} credits a message.` },
-  credits: { label: "Practice script · not enough credits", why: `Claude answers for ${PRICE.helperMessage} credits a message. Until your credits come back, a free practice script answers.` },
+  offline: { label: "Practice script · offline", why: "Live AI isn't set up here, so a free practice script answers." },
+  guest: { label: "Practice script · sign in for live AI", why: `Guests get a free practice script. Signed in, the AI answers for ${PRICE.helperMessage} credits a message.` },
+  credits: { label: "Practice script · not enough credits", why: `The AI answers for ${PRICE.helperMessage} credits a message. Until your credits come back, a free practice script answers.` },
 };
 
 export function Playground({ projectId, agent, bp, startMode, initialPrompt, onRunSaved, onPermissionChange }: { projectId: string; agent: Agent; bp: Blueprint; startMode: PlaygroundMode; initialPrompt?: string; onRunSaved?: () => void; onPermissionChange?: (toolId: string, permission: ToolPermission) => void }) {
@@ -90,7 +90,7 @@ export function Playground({ projectId, agent, bp, startMode, initialPrompt, onR
   const mode = chat.mode === "live" ? "live" : chat.mode === "budget" ? "budget" : chat.mode === "scripted" ? (startMode === "live" || startMode === "budget" ? "script" : startMode) : startMode;
   const live = mode === "live";
   const modeLabel = live ? "Live AI · sample data" : mode === "budget" ? "Paused at your spending cap" : mode === "script" ? "Practice script · free" : SCRIPT_LABEL[mode].label;
-  const modeTitle = live ? `Model: ${agent.cost.model}` : mode === "budget" ? "This project reached its spending cap. Raise it in Settings." : mode === "script" ? "A free practice script answered." : SCRIPT_LABEL[mode].why;
+  const modeTitle = live ? `Answered live by ${modelLabel(agent.cost.model).toLowerCase()}` : mode === "budget" ? "This project reached its spending cap. Raise it in Settings." : mode === "script" ? "A free practice script answered." : SCRIPT_LABEL[mode].why;
 
   return (
     <div className="flex h-full min-h-0 flex-col">

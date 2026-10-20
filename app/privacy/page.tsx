@@ -29,7 +29,7 @@ export default function Privacy() {
       <p>To enforce rate limits and to handle reports, we keep your IP address only as a hash mixed with a secret, so it can&apos;t be read back. A report from &quot;Report this page&quot; stores the reason, any details you write and that hash. The person who published the page isn&apos;t told who reported it.</p>
       <h2>Who else processes it</h2>
       <ul>
-        <li><strong>Anthropic</strong>: what you write, your plans, and AI helper conversations (including the records a helper looks up) are sent to Anthropic&apos;s Claude API to write plans, changes and replies.</li>
+        <li><strong>Anthropic</strong>: what you write, your plans, and AI helper conversations (including the records a helper looks up) are sent to Anthropic&apos;s API to write plans, changes and replies.</li>
         <li><strong>Supabase</strong> stores the database (in the United States, US East) and handles sign-in. <strong>Vercel</strong> hosts the app. <strong>Google</strong> handles Google sign-in. <strong>Resend</strong> sends email, when email is switched on.</li>
       </ul>
       <p>Nothing is sold, and nothing is used for advertising. Prod AI counts page views of its own pages with Vercel Web Analytics, which sets no cookies and keeps no profile of you. Published apps are never counted.</p>

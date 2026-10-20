@@ -64,7 +64,7 @@ function attentionLine(c: PreflightCheck, bp: ReturnType<typeof useWorkspace>["b
 }
 
 /** Short, one-click fix labels. The build fix gets its own label (it may start, resume or only show the build). */
-const FIX_LABEL: Record<string, string> = { enable_auth: "Turn on sign-in", gate_irreversible: "Make them ask first", sandbox_keys: "Add keys", set_budget: "Set a 500-credit cap", run_rehearsals: "Play them with Claude" };
+const FIX_LABEL: Record<string, string> = { enable_auth: "Turn on sign-in", gate_irreversible: "Make them ask first", sandbox_keys: "Add keys", set_budget: "Set a 500-credit cap", run_rehearsals: "Play them now" };
 
 /** Which must-fix comes first (and gets the one filled button): nothing else matters until it's built, then who can see the data. */
 const blockerRank = (c: PreflightCheck) => (c.fix?.action === "build_first" ? 0 : ({ signin: 1, permissions: 2, budget: 3, rehearsals: 4 } as Record<string, number>)[c.id] ?? 5);
@@ -358,7 +358,7 @@ function BusinessShipView({ deployments }: { deployments: DeploymentRow[] }) {
             <section aria-labelledby="cost">
               <h4 id="cost" className="text-body font-semibold">What it costs to run</h4>
               <p className="mt-1 text-ui text-muted-foreground">
-                Publishing is free. Each message an AI helper answers with Claude costs <span className="tabular-nums text-foreground">{PRICE.helperMessage} credits</span> from your monthly credits, visitors&apos; messages on your published app included.
+                Publishing is free. Each message an AI helper answers costs <span className="tabular-nums text-foreground">{PRICE.helperMessage} credits</span> from your monthly credits, visitors&apos; messages on your published app included.
               </p>
               {ws.credits.guest ? (
                 <p className="mt-2 text-ui text-muted-foreground">

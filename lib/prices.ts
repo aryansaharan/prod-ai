@@ -27,13 +27,13 @@ export type CreditMeter = Credits & { guest: boolean; memberAllowance: number };
 
 /** What costs credits, in plain words, in the order people meet them. */
 export const PRICE_LIST: { what: string; credits: number }[] = [
-  { what: "Planning an app with Claude", credits: PRICE.plan },
-  { what: "Importing a repo with Claude", credits: PRICE.import },
-  { what: "Applying a change Claude wrote", credits: PRICE.change },
-  { what: "A new AI helper Claude writes", credits: PRICE.newHelper },
-  { what: "Each AI helper message Claude answers", credits: PRICE.helperMessage },
-  { what: "Each AI helper test run Claude plays while making an app real", credits: PRICE.testRun },
-  { what: "An app Claude writes as real code", credits: PRICE.codeApp },
+  { what: "Planning an app", credits: PRICE.plan },
+  { what: "Importing a repo", credits: PRICE.import },
+  { what: "Applying a change Prod AI wrote", credits: PRICE.change },
+  { what: "A new AI helper Prod AI writes", credits: PRICE.newHelper },
+  { what: "Each AI helper message", credits: PRICE.helperMessage },
+  { what: "Each AI helper test run played while making an app real", credits: PRICE.testRun },
+  { what: "An app Prod AI writes as real code", credits: PRICE.codeApp },
   { what: "A change to a code app's code", credits: PRICE.codeChange },
 ];
 

@@ -1,6 +1,7 @@
 import "server-only";
 import type { Supa } from "@/lib/supabase/server";
 import { withKnownFrameworks } from "@/lib/blueprint/schema";
+import { unbrand } from "@/lib/text";
 import type {
   AgentRunRow,
   CheckpointMeta,
@@ -16,7 +17,27 @@ import type {
 
 /** Rows that carry a saved plan, read with every helper on a framework Prod AI still writes code for. */
 function withPlan<T extends { blueprint?: unknown }>(row: T): T {
-  return row.blueprint ? { ...row, blueprint: withKnownFrameworks(row.blueprint as { agents?: { framework: string }[] }) } : row;
+  return row.blueprint ? { ...row, blueprint: unbrandPlan(withKnownFrameworks(row.blueprint as { agents?: { framework: string }[] })) } : row;
+}
+
+/** Plans saved before Prod AI stopped naming the model: the code app's writer and test-run notes read as Prod AI's. */
+function unbrandPlan<T>(bp: T): T {
+  const plan = bp as { agents?: { id?: string; name?: string; plain?: string; rehearsals?: { history?: { note?: string }[] }[] }[] };
+  if (!plan.agents?.length) return bp;
+  return {
+    ...plan,
+    agents: plan.agents.map((a) => ({
+      ...a,
+      name: a.name === "Claude" ? "Prod AI" : a.name,
+      plain: typeof a.plain === "string" ? unbrand(a.plain) : a.plain,
+      rehearsals: a.rehearsals?.map((r) => ({ ...r, history: r.history?.map((h) => (typeof h.note === "string" ? { ...h, note: unbrand(h.note) } : h)) })),
+    })),
+  } as T;
+}
+
+/** Notes and labels saved before that rule, reworded the same way. */
+function unbrandRow<T extends { title?: string; body?: string | null; label?: string | null; summary?: string | null }>(row: T): T {
+  return { ...row, ...(row.title !== undefined && { title: unbrand(row.title) }), ...(row.body !== undefined && { body: unbrand(row.body) }), ...(row.label !== undefined && { label: unbrand(row.label) }), ...(row.summary !== undefined && { summary: unbrand(row.summary) }) };
 }
 
 /** The list leaves out a code app's files and build (large); `kind` says which kind of app each one is. */
@@ -43,20 +64,20 @@ export async function listCheckpoints(supa: Supa, projectId: string): Promise<Ch
     .eq("project_id", projectId)
     .order("seq", { ascending: false });
   if (error) throw error;
-  return (data ?? []) as CheckpointMeta[];
+  return ((data ?? []) as CheckpointMeta[]).map(unbrandRow);
 }
 
 export async function getCheckpoint(supa: Supa, id: string): Promise<CheckpointRow | null> {
   const { data, error } = await supa.from("checkpoints").select("*").eq("id", id).maybeSingle();
   if (error) throw error;
-  return data ? withPlan(data as CheckpointRow) : null;
+  return data ? unbrandRow(withPlan(data as CheckpointRow)) : null;
 }
 
 export async function getCheckpointsFull(supa: Supa, ids: string[]): Promise<CheckpointRow[]> {
   if (!ids.length) return [];
   const { data, error } = await supa.from("checkpoints").select("*").in("id", ids);
   if (error) throw error;
-  return ((data ?? []) as CheckpointRow[]).map(withPlan);
+  return ((data ?? []) as CheckpointRow[]).map((c) => unbrandRow(withPlan(c)));
 }
 
 export async function listLedger(supa: Supa, projectId: string, limit = 80): Promise<LedgerRow[]> {
@@ -67,7 +88,7 @@ export async function listLedger(supa: Supa, projectId: string, limit = 80): Pro
     .order("created_at", { ascending: false })
     .limit(limit);
   if (error) throw error;
-  return (data ?? []) as LedgerRow[];
+  return ((data ?? []) as LedgerRow[]).map(unbrandRow);
 }
 
 export async function listWorkOrders(supa: Supa, projectId: string): Promise<WorkOrderRow[]> {

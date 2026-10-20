@@ -23,7 +23,7 @@ export function BuildSteps({ steps, phase, fixed, ref }: { steps: BuildStepView[
   const current = [...steps].reverse().find((s) => s.state === "running");
   const didntStart = steps.some((s) => s.id === "start" && s.state === "failed");
   const lead = phase === "repairing" ? "Fixing it" : phase === "failed" ? (didntStart ? "It built, but it didn't start" : "The build stopped here") : "Making it real";
-  const doing = phase === "repairing" ? "Claude is reading the error and your files" : current ? current.label : phase === "building" ? "Getting started" : null;
+  const doing = phase === "repairing" ? "Prod AI is reading the error and your files" : current ? current.label : phase === "building" ? "Getting started" : null;
   return (
     <section ref={ref} tabIndex={-1} aria-label="Build progress" className="mt-7 scroll-mt-6 rounded-md border border-hairline bg-canvas/60 px-4 py-4 outline-none sm:px-5">
       <p aria-live="polite" className="flex flex-wrap items-baseline gap-x-3 gap-y-1">

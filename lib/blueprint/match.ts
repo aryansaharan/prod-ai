@@ -62,6 +62,6 @@ const STARTER_NAME: Record<Exclude<Vertical, "custom">, string> = {
 export function guestStarterNote(brief: string): string {
   const m = matchVertical(brief);
   return m.weak
-    ? `None of the starter plans is close to this, so it starts from the nearest one (${STARTER_NAME[m.vertical]}) for you to reshape with notes. Sign in and Claude plans it from your own words.`
-    : "Guests start from the closest starter plan. Sign in and Claude plans it from your own words.";
+    ? `None of the starter plans is close to this, so it starts from the nearest one (${STARTER_NAME[m.vertical]}) for you to reshape with notes. Sign in and Prod AI plans it from your own words.`
+    : "Guests start from the closest starter plan. Sign in and Prod AI plans it from your own words.";
 }

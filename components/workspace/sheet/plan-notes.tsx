@@ -80,7 +80,7 @@ export function ReadyNote() {
         Prod AI checks the plan and writes and compiles the code, <span className="font-semibold">free</span>
         {withTests ? (
           <>
-            . Then Claude plays {plural(runs, "test run")} with your AI helpers, <span className="tabular-nums font-semibold">{cost} credits</span>.
+            . Then the AI plays {plural(runs, "test run")} with your AI helpers, <span className="tabular-nums font-semibold">{cost} credits</span>.
           </>
         ) : (
           "."
@@ -91,7 +91,7 @@ export function ReadyNote() {
         <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
           <span className="text-meta text-muted-foreground">Test runs</span>
           <PencilRadio<"yes" | "no">
-            label="Play the test runs with Claude"
+            label="Play the test runs"
             value={play}
             onChange={setPlay}
             options={[
@@ -105,14 +105,14 @@ export function ReadyNote() {
         <p className="mt-2 max-w-[66ch] text-body text-muted-foreground">
           {why === "guest" ? (
             <>
-              Its {plural(runs, "test run")} are played by Claude, so they need you signed in ({PRICE.testRun} credits each).{" "}
+              Its {plural(runs, "test run")} are played by the AI, so they need you signed in ({PRICE.testRun} credits each).{" "}
               <Link href={`/login?next=${encodeURIComponent(`/p/${ws.project.id}`)}`} className="text-brand underline decoration-dotted underline-offset-4 hover:text-brand-hi">
                 Sign in
               </Link>{" "}
               for free credits every month, or make it real now without them.
             </>
           ) : why === "offline" ? (
-            "Claude isn't available right now, so its test runs will be skipped. Run them later from AI helpers."
+            "The AI isn't available right now, so its test runs will be skipped. Run them later from AI helpers."
           ) : (
             `Its ${plural(runs, "test run")} need ${cost} credits and you have ${left} left, so they'll be skipped. Run them later from AI helpers.`
           )}

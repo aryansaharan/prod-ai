@@ -237,7 +237,7 @@ export function PlanningView({
     <div className="mx-auto max-w-5xl">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
         {typeof eyebrow === "string" ? <p className="font-sketch text-sketch text-muted-foreground">{eyebrow}</p> : eyebrow}
-        <p className="text-meta text-faint sm:ml-auto">{mode === "live" ? "Sketching with Claude" : "Starting from a ready-made sketch"}</p>
+        <p className="text-meta text-faint sm:ml-auto">{mode === "live" ? "Sketching with AI" : "Starting from a ready-made sketch"}</p>
       </div>
       <h1 className="mt-4 font-pencil text-title">
         {draft.name ? (

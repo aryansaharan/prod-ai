@@ -60,7 +60,7 @@ export async function POST(req: Request) {
   const weak = matchVertical(starterText).weak;
   const starterWords = weak ? "a general starter plan (none is close to this repo)" : "the closest starter plan";
   const noModelNote = user.isAnonymous
-    ? `As a guest, the screens come from ${starterWords} and any agents are read from your code. Sign in and Claude maps it all from your code.`
+    ? `As a guest, the screens come from ${starterWords} and any agents are read from your code. Sign in and Prod AI maps it all from your code.`
     : afford && !afford.ok
       ? outOfCreditsNote(afford.credits, `the screens come from ${starterWords} and any agents are read from your code`)
       : undefined;
@@ -164,7 +164,7 @@ Use the repository's own names for agents and screens where the README or folder
                 : fromCode
                   ? `Started from ${weak ? "a general" : "the closest"} starter plan: ${count(blueprint.screens.length, "screen")}, with ${count(fromCode, "AI helper")} from your code`
                   : `Started from ${weak ? "a general" : "the closest"} starter plan: ${count(blueprint.screens.length, "screen")} and ${count(blueprint.agents.length, "AI helper")}`,
-            body: `${mappedBy === "claude" ? `Mapped by Claude from your code · ${PRICE.import} credits.` : `The screens and data come from ${starterWords}, not from your code${user.isAnonymous ? ". Sign in and Claude maps it from your code" : ""}.`}${agentNote ? ` ${agentNote}` : ""} Every outside connection starts as not connected (test data) until you add its keys. The first change will open as a pull request. Nothing is pushed to main.`,
+            body: `${mappedBy === "claude" ? `Mapped by Prod AI from your code · ${PRICE.import} credits.` : `The screens and data come from ${starterWords}, not from your code${user.isAnonymous ? ". Sign in and Prod AI maps it from your code" : ""}.`}${agentNote ? ` ${agentNote}` : ""} Every outside connection starts as not connected (test data) until you add its keys. The first change will open as a pull request. Nothing is pushed to main.`,
             credits: mode === "live" ? PRICE.import : 0,
             checkpointId: cp.id,
           },

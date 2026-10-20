@@ -104,7 +104,7 @@ export async function POST(req: Request) {
             // Plain facts, no model names: who planned it, what it costs, and that nothing is built yet.
             body:
               mode === "live"
-                ? `Planned by Claude from your words · ${PRICE.plan} credits. Making it real is free, and nothing is built until you press it.${keysNote}`
+                ? `Planned by Prod AI from your words · ${PRICE.plan} credits. Making it real is free, and nothing is built until you press it.${keysNote}`
                 : `Started from ${weak ? "a general starter plan (none is close to this)" : "the closest starter plan"}, free. Making it real is free too, and nothing is built until you press it.${keysNote}`,
             credits: mode === "live" ? PRICE.plan : 0,
             checkpointId: cp.id,

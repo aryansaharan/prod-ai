@@ -79,7 +79,7 @@ export function CodeWritingView({
     return (
       <div className="mx-auto max-w-2xl">
         {eyebrow}
-        <h1 className="mt-4 font-pencil text-title">{signInNext ? "Sign in to have Claude write it" : "Claude can't write this one just now"}</h1>
+        <h1 className="mt-4 font-pencil text-title">{signInNext ? "Sign in to have Prod AI write it" : "Prod AI can't write this one just now"}</h1>
         <div role="alert" className="panel mt-6 rounded-md px-4 py-4 sm:px-5">
           <p className="flex gap-2 text-body text-foreground">
             <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
@@ -105,7 +105,7 @@ export function CodeWritingView({
     <div className="mx-auto max-w-5xl">
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
         {eyebrow}
-        <p className="text-meta text-faint sm:ml-auto">Writing real code with Claude</p>
+        <p className="text-meta text-faint sm:ml-auto">Writing real code with AI</p>
       </div>
       <h1 className="mt-4 font-pencil text-title">
         {manifest?.title ? (
@@ -113,7 +113,7 @@ export function CodeWritingView({
             {manifest.title}
           </Written>
         ) : (
-          <span className={cn(working ? "text-foreground" : "text-faint")}>Claude is writing your app</span>
+          <span className={cn(working ? "text-foreground" : "text-faint")}>Prod AI is writing your app</span>
         )}
       </h1>
       <p className="mt-3 min-h-[1.55em] text-lead text-muted-foreground">{manifest?.tagline ? <span className="fade-up">{manifest.tagline}</span> : ""}</p>

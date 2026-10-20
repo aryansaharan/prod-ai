@@ -123,7 +123,7 @@ function render(agent: Agent, bp: Blueprint): string {
     "from agents.extensions.models.litellm_model import LitellmModel",
     "",
     audited && 'audit = logging.getLogger("prodai.audit")',
-    "# This agent runs on Claude; traces are exported to OpenAI only if OPENAI_API_KEY is set.",
+    "# The model is reached with ANTHROPIC_API_KEY; traces are exported to OpenAI only if OPENAI_API_KEY is set.",
     'set_tracing_disabled(not os.environ.get("OPENAI_API_KEY"))',
     "",
     pyPromptConst("INSTRUCTIONS", systemPrompt(agent)),
@@ -151,7 +151,7 @@ function notes(agent: Agent): string[] {
         `Agents SDK sessions store conversation history, not long-term memory. Prod AI maps '${scope}' to one shared persistent SQLiteSession.`,
     ],
     [
-      "Claude runs through LitellmModel, which the SDK supports on a best-effort (beta) basis; usage metrics may need ModelSettings(include_usage=True).",
+      "The model runs through LitellmModel, which the SDK supports on a best-effort (beta) basis; usage metrics may need ModelSettings(include_usage=True).",
       "Tracing is disabled unless OPENAI_API_KEY is set, because the SDK exports traces to OpenAI by default.",
     ],
   );

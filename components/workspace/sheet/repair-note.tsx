@@ -114,7 +114,7 @@ export function RepairNote() {
       </div>
 
       <div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-dashed border-hairline pt-3">
-        <p className="text-meta text-muted-foreground">With a fix, Claude plays the failed test runs again before you see the app, free.</p>
+        <p className="text-meta text-muted-foreground">With a fix, the AI plays the failed test runs again before you see the app, free.</p>
         <div className="flex flex-wrap items-center gap-1">
           <Button variant="ghost" className="text-muted-foreground" disabled={stopping || Boolean(choice) || replay} onClick={() => ws.build.choose("none")}>
             {choice === "none" ? (replay ? "Left as it was" : "Finishing…") : "Leave it and finish"}
