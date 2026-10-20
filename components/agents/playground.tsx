@@ -90,7 +90,7 @@ export function Playground({ projectId, agent, bp, startMode, initialPrompt, onR
   const mode = chat.mode === "live" ? "live" : chat.mode === "budget" ? "budget" : chat.mode === "scripted" ? (startMode === "live" || startMode === "budget" ? "script" : startMode) : startMode;
   const live = mode === "live";
   const modeLabel = live ? "Live AI · sample data" : mode === "budget" ? "Paused at your spending cap" : mode === "script" ? "Practice script · free" : SCRIPT_LABEL[mode].label;
-  const modeTitle = live ? `Answered live by ${modelLabel(agent.cost.model).toLowerCase()}` : mode === "budget" ? "This project reached its spending cap. Raise it in Settings." : mode === "script" ? "A free practice script answered." : SCRIPT_LABEL[mode].why;
+  const modeTitle = live ? `Answered live by a ${modelLabel(agent.cost.model).replace(/^\w/, (c) => c.toLowerCase())}` : mode === "budget" ? "This project reached its spending cap. Raise it in Settings." : mode === "script" ? "A free practice script answered." : SCRIPT_LABEL[mode].why;
 
   return (
     <div className="flex h-full min-h-0 flex-col">

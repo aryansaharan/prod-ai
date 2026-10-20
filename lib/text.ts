@@ -23,7 +23,7 @@ export function unbrand(s: string | null): string | null;
 export function unbrand(s: string | null): string | null {
   if (!s || !s.includes("Claude")) return s;
   return s
-    .replace(/\bClaude: /g, "")
+    .replace(/\bClaude: (\w)/g, (_, c: string) => c.toUpperCase())
     .replace(/\b(Played|played) by Claude\b/g, "$1 by the AI")
     .replace(/\bClaude (plays|played|is playing|answers)\b/g, "the AI $1")
     .replace(/(^|[.!?]\s+)the AI/g, (_, a: string) => `${a}The AI`)

@@ -568,7 +568,7 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
   const afford = hold.ok ? await canAfford(user.id, user.isAnonymous, "codeApp") : null;
   if (hold.ok && afford && !afford.ok) await hold.release();
   if (!hold.ok)
-    return refusal("Prod AI has done a lot for this account today, so it can't write a whole app right now. It comes back within 24 hours. You can start from a business starter now, free.", "code-unavailable", [BUSINESS_ACTION]);
+    return refusal("This account has used a lot of AI today, so Prod AI can't write a whole app right now. That resets within 24 hours. You can start from a business starter now, free.", "code-unavailable", [BUSINESS_ACTION]);
   if (!afford?.ok)
     return refusal(
       `Writing an app as real code takes ${PRICE.codeApp} credits. ${outOfCreditsNote(afford!.credits, "Prod AI can't write this one")}`,
@@ -666,7 +666,7 @@ export async function codePlanResponse(p: { user: SessionUser; supa: Supa; brief
                 kind: "work_order",
                 title: `Wrote ${app.manifest.kind || "the app"} in ${count(app.files.length, "file")}`,
                 // Plain facts, no model names: who wrote it, what it cost, and what happens next.
-                body: `Written by Prod AI from your words · ${PRICE.codeApp} credits. Prod AI builds it for real next, free.${dataWords(app.manifest)}`,
+                body: `Written by Prod AI from your words · ${PRICE.codeApp} credits. It's built for real next, free.${dataWords(app.manifest)}`,
                 credits: PRICE.codeApp,
                 checkpointId: cp.id,
                 meta: { kind: "code", files: app.files.length },

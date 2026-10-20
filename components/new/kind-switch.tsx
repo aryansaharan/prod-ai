@@ -25,11 +25,11 @@ export function KindLine({
   onChange: (k: AppKind) => void;
   className?: string;
 }) {
-  const sentence = deciding ? "Reading your idea to see what kind of app it is…" : kind === "code" ? "Prod AI will write this as real code." : "Prod AI will plan this as a business app for your team.";
+  const sentence = deciding ? "Reading your idea to see what kind of app it is…" : kind === "code" ? "It will be written as real code." : "It will be planned as a business app for your team.";
   return (
     <div className={cn("flex flex-wrap items-center gap-x-4 gap-y-2", className)}>
       <div className="min-w-0 flex-1">
-        <p className="font-sketch text-sketch text-muted-foreground">{chosenBy === "you" ? "You chose" : "What Prod AI will make"}</p>
+        <p className="font-sketch text-sketch text-muted-foreground">{chosenBy === "you" ? "You chose" : "What it will be"}</p>
         <p key={`${kind}-${deciding}`} className={cn("mt-0.5 text-body", deciding ? "text-muted-foreground" : "fade-up text-foreground")} aria-live="polite">
           {sentence}
           {!deciding && reason && <span className="block text-meta text-muted-foreground">{reason}</span>}

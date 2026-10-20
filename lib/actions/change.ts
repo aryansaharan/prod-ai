@@ -179,7 +179,7 @@ async function requestCodeChange(user: SessionUser, supa: Supa, project: Project
   // Claude writes the change only for someone who could pay to apply it, so quotes can't run up model costs.
   const hold = await holdModelBudget(user, "change", codeChangeHoldUsd(project.code, text));
   if (!hold.ok && hold.reason === "rate") return { ok: false, error: "That's a lot of changes in a few minutes. Wait a little, then try again. Nothing was charged." };
-  if (!hold.ok) return { ok: false, error: "Prod AI has done a lot for this account today, so it can't change the code right now. It comes back within 24 hours. Nothing was charged." };
+  if (!hold.ok) return { ok: false, error: "This account has used a lot of AI today, so Prod AI can't change the code right now. That resets within 24 hours. Nothing was charged." };
   try {
     const afford = await canAfford(user.id, user.isAnonymous, "codeChange");
     if (!afford.ok) {
