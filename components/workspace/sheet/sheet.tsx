@@ -49,8 +49,8 @@ const refKey = (type: ObjectType, id: string) => `${type}:${id}`;
 function mapLine(ws: SheetWorkspace): string {
   const bp = ws.blueprint;
   const saved = ws.project.settings.mappedBy;
-  const planNote = ws.ledger.find((l) => l.kind === "work_order" && /^(Mapped by (Claude|Prod AI)|Offline mode|The screens and data come from)/.test(l.body ?? ""));
-  const by = saved ?? (planNote ? (/^Mapped by (Claude|Prod AI)/.test(planNote.body!) ? "claude" : "starter") : null);
+  const planNote = ws.ledger.find((l) => l.kind === "work_order" && /^(Mapped by Prod AI|Offline mode|The screens and data come from)/.test(l.body ?? ""));
+  const by = saved ?? (planNote ? (planNote.body!.startsWith("Mapped by Prod AI") ? "claude" : "starter") : null);
   const all = `${plural(bp.screens.length, "screen")} and ${plural(bp.agents.length, "AI helper")}`;
   if (by === "claude") return `What Prod AI found in your code: ${all}.`;
   if (by === null) return `The map of your repo: ${all}.`;

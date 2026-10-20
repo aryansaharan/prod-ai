@@ -33,7 +33,7 @@ export async function HomeView({
         {user.isAnonymous && (
           <div className="mb-10 flex flex-wrap items-center gap-x-4 gap-y-3 rounded-md border border-dashed border-hairline-hi px-4 py-3 text-body text-muted-foreground">
             <p className="min-w-0 flex-1 basis-72">
-              You&apos;re trying Prod AI as a guest, so new apps start from the closest starter plan. Sign in for {credits.memberAllowance} free credits a month and Prod AI plans them from your own words. Your work comes with you.
+              You&apos;re trying Prod AI as a guest, so new apps start from the closest starter plan. Sign in for {credits.memberAllowance} free credits a month and they&apos;re planned from your own words. Your work comes with you.
             </p>
             {/* At the guest cap the note under the greeting carries the sign-in, so it isn't offered twice. */}
             {!capMessage && (

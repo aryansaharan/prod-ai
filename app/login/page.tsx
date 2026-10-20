@@ -57,7 +57,7 @@ export default async function LoginPage(props: PageProps<"/login">) {
         <h1 className="font-pencil text-title">{isGuest ? "Keep your work" : "Let's get you started"}</h1>
         <p className="mt-3 text-lead text-muted-foreground">
           {isGuest
-            ? "You're trying Prod AI as a guest. Sign in and everything you've made comes with you, and Prod AI plans your next app from your own words."
+            ? "You're trying Prod AI as a guest. Sign in and everything you've made comes with you, and your next app is planned from your own words."
             : "Sign in and Prod AI plans your app from your own words, and everything you make is kept."}
         </p>
 

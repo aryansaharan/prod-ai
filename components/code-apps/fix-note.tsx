@@ -98,7 +98,7 @@ export function FixNote({
         {stuck ? (
           <>
             <p className="min-w-0 flex-1 basis-64 text-body text-foreground">
-              Prod AI has tried {MAX_REPAIRS} fixes in a row and it still breaks. Describe what you want it to do in a note, in your own words, and Prod AI starts from that.
+              Prod AI has tried {MAX_REPAIRS} fixes in a row and it still breaks. Describe what you want it to do in a note, in your own words, and it starts again from that.
             </p>
             <Button size="lg" onClick={onNote}>
               <NotebookPen aria-hidden /> Write a note

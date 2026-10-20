@@ -84,7 +84,7 @@ export function LookCard({
   size?: "sm" | "md";
 }) {
   const name = look === "auto" ? "Its own look" : LOOKS[look].name;
-  const line = look === "auto" ? "Prod AI designs one for the idea" : LOOKS[look].line;
+  const line = look === "auto" ? "Designed for your idea" : LOOKS[look].line;
   return (
     <button
       type="button"

@@ -33,7 +33,7 @@ export function kindFromWords(brief: string): KindDecision {
   const code = hits(CODE_STRONG, brief) * 2 + hits(CODE_WEAK, brief);
   const business = hits(BUSINESS_STRONG, brief) * 2 + hits(BUSINESS_WEAK, brief);
   if (code > business)
-    return { kind: "code", reason: "It sounds like a game, a site or a creative app, so Prod AI would write it as real code.", by: "words" };
+    return { kind: "code", reason: "It sounds like a game, a site or a creative app, so it would be written as real code.", by: "words" };
   if (business > 0)
     return { kind: "business", reason: "It sounds like a tool for a team's work: records, requests and approvals.", by: "words" };
   return { kind: "business", reason: "Nothing points to a game or a site, so it starts as a business app. You can switch.", by: "words" };
@@ -48,7 +48,7 @@ const INSTRUCTIONS = `You sort app ideas for Prod AI, which makes two kinds of a
 - "business": a tool for a team's or an organisation's work: records and forms, queues, approvals, case or ticket handling, CRMs, inventories, internal dashboards over company data, AI helpers (agents) that act on business systems. Prod AI builds these from a typed plan of screens, data, AI helpers and approvals.
 - "code": anything else: games, websites, portfolios and landing pages, quizzes and learning apps, personal tools, calculators and converters, simulations, visual, musical or creative apps, toys, anything that needs custom visuals or interaction. Prod AI writes these as real source code.
 Choose "business" only when the idea is mainly about people at work handling records, requests or approvals. Custom visuals or play mean "code".
-reason: why, in one short plain sentence that uses the idea's own words, like "A memory game needs custom visuals and play, so Prod AI writes real code." or "Tracking claims with approvals is a team's work, so it's a business app."`;
+reason: why, in one short plain sentence that uses the idea's own words, like "A memory game needs custom visuals and play, so it's written as real code." or "Tracking claims with approvals is a team's work, so it's a business app."`;
 
 export type KindResult = KindDecision & { usage?: ModelSpend };
 

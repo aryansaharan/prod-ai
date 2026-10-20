@@ -113,7 +113,7 @@ export function RealApp({ justBuilt }: { justBuilt: boolean }) {
     pending.current = null;
     if (next === lookOf(bp.meta.theme.look).id) return setTrying(null);
     void setTheme(ws.project.id, { look: next }).then((r) => {
-      if (r.ok) toast.success(`${LOOKS[next].name} look saved`, { description: "Every screen wears it now, and so will the published app." });
+      if (r.ok) toast.success(`${LOOKS[next].name} look saved`, { description: ws.liveSlug ? "Every screen wears it now. Publish again to put it on your live app." : "Every screen wears it now, and it's how the app will look when you publish." });
       else {
         setTrying(null);
         toast.error("The look didn't save", { description: r.error });

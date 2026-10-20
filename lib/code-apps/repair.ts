@@ -110,7 +110,7 @@ export async function repairCodeApp(user: SessionUser, access: CodeAppAccess, pr
   if (!hold.ok)
     return hold.reason === "rate"
       ? { ok: false, status: 429, error: "That's a lot of AI work in a few minutes. Wait a little, then try again.", code: "rate" }
-      : { ok: false, status: 503, error: "Prod AI has done a lot for this account today, so it can't fix the code right now. It comes back within 24 hours.", code: "unavailable" };
+      : { ok: false, status: 503, error: "This account has used a lot of AI today, so Prod AI can't fix the code right now. That resets within 24 hours.", code: "unavailable" };
 
   // Free: every attempt's real cost is metered at 0 credits, failures included.
   const meter = (spent: ModelSpend) =>

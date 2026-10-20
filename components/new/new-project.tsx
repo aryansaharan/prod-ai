@@ -282,7 +282,7 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
                 {isGuest && (
                   <p className="mt-3 flex gap-2 text-body text-foreground">
                     <Info className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                    Prod AI writes real code for people who are signed in. Sign in and your note comes with you.
+                    Writing real code needs you signed in. Sign in and your note comes with you.
                   </p>
                 )}
               </div>
@@ -354,7 +354,7 @@ export function NewProject({ initialPrompt, llm, isGuest = false, capMessage = n
               </div>
               <p className="mt-2 text-body text-muted-foreground">
                 {kind === "code"
-                  ? "The style Prod AI writes your app in: colours, type, corners and the ground it sits on. Or let it design one just for your idea."
+                  ? "The style your app is written in: colours, type, corners and the ground it sits on. Or let Prod AI design one just for your idea."
                   : "The style of your app: colours, type, corners and the ground it sits on. Your brand colour stays your own in every look."}
               </p>
               <div role="group" aria-label="Look" className="mt-5 grid grid-cols-2 gap-2 sm:grid-cols-3">
