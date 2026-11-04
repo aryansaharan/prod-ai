@@ -22,7 +22,7 @@
 ## Try it
 
 1. Open **[prod-ai-studio.vercel.app](https://prod-ai-studio.vercel.app)**, write what you want on the ruled sheet (or pick a starter such as *Claims desk*), and press **Make it**.
-2. **Sign in** with Google or an email link to get 300 free credits a month, so Claude plans the app from your own words. Or **continue as a guest**: you start from the closest starter plan, and nothing costs credits.
+2. **Sign in** with Google or an email link to get 300 free credits a month, so Claude plans the app from your own words. Or **continue as a guest**: your first app is planned by Claude from your own words, free; after that a guest starts from the closest starter plan, and nothing costs credits.
 3. Answer the few questions (or **Skip, use sensible defaults**) and watch the plan being drawn as a sketch.
 4. On the **Sheet**, read your app as a pencil sketch: screen cards, AI helpers as sticky notes, and its connections. Press **Make it real** (free) and watch each screen ink in as the server checks the plan and compiles its code. Signed in, you can also have Claude play each AI helper's test runs (5 credits each, price shown first).
 5. If a test run really fails, the note on the sheet says what was asked, what should happen, what the helper did and why it failed: pick the free fix (the failed runs are then played again, free) or leave it. Then **"It's real."**: try the app, switch devices, or **Point and write a note**.
@@ -38,8 +38,8 @@ Short on time? **[/demo](https://prod-ai-studio.vercel.app/demo)** opens a finis
 | Flow | Where | Today |
 | --- | --- | --- |
 | Sign in with Google or an email link; guest sessions you can keep | `/login`, `/start` | **Real** (Supabase Auth). A guest who signs in keeps their work |
-| Questions, then the plan drawn as a sketch | `/new` | **Real.** Claude plans from your words when you're signed in, and picks a business app or real code (you can switch); guests, and anyone out of credits, start from the closest starter plan |
-| Make it real (business app): checks, code, test runs, the fix note | Sheet `/p/:id` | **Real**, on the server. It checks every reference in the plan and every sample record, generates the code and compiles each TypeScript file with esbuild (Python, YAML and SQL are written, not compiled, and it says so), and reports each helper's duties and each connection. Optional test runs (price shown first, at most 12): Claude plays each AI helper with its real rules and sandboxed tools, and a second call judges it. A real failure gets a fix note and a free fix, then a free replay. A reload or a second tab follows the same build. The app itself is drawn from its plan by a tested library of nine building blocks; the generated code is compiled, not run |
+| Questions, then the plan drawn as a sketch | `/new` | **Real.** Claude plans from your words when you're signed in, and picks a business app or real code (you can switch); a guest's first plan is Claude's too, free; after that guests, and anyone out of credits, start from the closest starter plan |
+| Make it real (business app): checks, code, test runs, the fix note | Sheet `/p/:id` | **Real**, on the server. It checks every reference in the plan and every sample record, generates the code and runs each TypeScript file through esbuild's compiler, a syntax and JSX check rather than a type check (Python, YAML and SQL are written, not compiled, and it says so), and reports each helper's duties and each connection. Optional test runs (price shown first, at most 12): Claude plays each AI helper with its real rules and sandboxed tools, and a second call judges it. A real failure gets a fix note and a free fix, then a free replay. A reload or a second tab follows the same build. The app itself is drawn from its plan by a tested library of nine building blocks; the generated code is compiled, not run |
 | "It's real.": the app on the Sheet, device switch, point and write a note | Sheet | **Real** renderer over the real plan and sample data |
 | Notes in the margin, a priced change, Apply, version N, Undo | Margin | **Real.** Claude returns typed edits that code checks and applies; rule-based when Claude isn't available |
 | AI helpers: what each may do, and Try it with an approval gate | `/p/:id/agents` | **Real** (Claude with tool approval; approvals are signed by the server). Try it runs on sample data; guests get a scripted run that still asks first |
@@ -63,7 +63,7 @@ Anything simulated is labelled in the product.
 Only work Claude does costs credits, and you see the price before it runs.
 
 - **300 free credits a month** for each signed-in person, back on the 1st of every month (UTC).
-- **Guests** don't have credits. They use the free starter plans, rule-based changes and scripted answers (so no test runs or code apps, which need Claude).
+- **Guests** don't have credits. Their first app is planned by Claude for free; after that they use the free starter plans, rule-based changes and scripted answers (so no test runs or code apps, which need Claude).
 - **No payments yet.** Credits can't be bought, and they have no cash value.
 
 | What | Credits |

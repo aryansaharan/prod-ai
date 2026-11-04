@@ -12,7 +12,7 @@ export function rehearsalOutcome(agent: Agent, r: Rehearsal): { pass: boolean; n
   const text = `${r.input} ${r.expect}`;
   if (ungated.length && (RISKY.test(text) || agent.rehearsals[0]?.id === r.id)) {
     const t = ungated[0];
-    return { pass: false, note: `${agent.name} called “${t.name}” without asking a person.` };
+    return { pass: false, note: `${agent.name}: “${t.name}” can't be undone but was set to “Tell me” instead of asking a person first.` };
   }
   if (agent.supervision === "autonomous" && /never|without|don't|do not/i.test(r.expect) && agent.rules.length < 2) {
     return { pass: false, note: "Acted on its own where the expectation needed a check." };

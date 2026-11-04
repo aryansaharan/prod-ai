@@ -38,7 +38,7 @@ Short notes on the calls that shaped Prod AI: what I chose, what I rejected, and
 
 ## 6. Test runs inside the build
 
-**Decision.** Every build offers each AI helper's test runs (rehearsals, under the hood): Claude plays the helper and a second call judges it against what the test expects. Publish warns about test runs that weren't played and blocks when fewer than 80% of the played ones pass; generated CI runs them on each pull request.
+**Decision.** Every build offers each AI helper's test runs (rehearsals, under the hood): Claude plays the helper and a second call judges it against what the test expects. Publish warns about test runs that weren't played and blocks when fewer than 80% of the played ones pass. The generated CI typechecks and builds the code on each pull request; the test runs themselves run in Prod AI.
 
 **Why.** This brings agent testing forward from "before production" to "while designing". When a run really fails, a note on the sheet shows what was asked, what should happen and what the helper did, and proposes a free fix. That moment is the product's clearest demonstration of trust.
 
@@ -50,7 +50,7 @@ Short notes on the calls that shaped Prod AI: what I chose, what I rejected, and
 
 ## 8. Guests start from scratch; the finished example has its own door
 
-**Decision.** Sign-in offers Google, an email link, or **continue as a guest**. A guest starts with an empty desk and nothing seeded: the first thing they see of Prod AI is their own idea turning into a sketch, from the closest starter plan. A finished, published example project lives at `/demo`, linked from the README. Signing in later keeps everything (identity linking); guests who don't come back for a week are removed with their projects.
+**Decision.** Sign-in offers Google, an email link, or **continue as a guest**. A guest starts with an empty desk and nothing seeded: the first thing they see of Prod AI is their own idea turning into a sketch, planned by Claude from their own words, free (one plan per guest; after that, the closest starter plan). A finished, published example project lives at `/demo`, linked from the README. Signing in later keeps everything (identity linking); guests who don't come back for a week are removed with their projects.
 
 **Why.** A seeded example on a first visit answers a question nobody asked and makes the product look like a template gallery. Someone who wants to see a finished, published project in seconds still can, through its own door. Both are real product plumbing: a guest's data is protected by the same row-level security as everyone's.
 
@@ -108,7 +108,7 @@ Short notes on the calls that shaped Prod AI: what I chose, what I rejected, and
 
 ## 17. Monthly free credits, no payments yet
 
-**Decision.** Each signed-in person gets 300 free credits a month, back on the 1st (UTC). Guests get none and use the free starter plans. Credits can't be bought yet.
+**Decision.** Each signed-in person gets 300 free credits a month, back on the 1st (UTC). Guests get none: their first plan is on the house, and after that they use the free starter plans. Credits can't be bought yet.
 
 **Why.** Prod AI runs on free tiers (Vercel Hobby, Supabase Free, the Anthropic API; [docs/LAUNCH.md](docs/LAUNCH.md)), and Vercel Hobby is for non-commercial use, so charging waits for a paid plan. A monthly allowance lets a signed-in person plan a few apps and make real changes, while the daily budgets keep the bill bounded.
 
