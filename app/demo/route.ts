@@ -25,7 +25,7 @@ export async function GET(request: NextRequest) {
   const existing = userId && !prompt ? await existingDemo(supabase) : undefined;
   if (existing) return NextResponse.redirect(`${origin}/p/${existing}`);
 
-  // At most 5 examples seeded and 10 new guests an hour from one network (the guest limit is shared with app/start).
+  // At most 20 examples seeded and 30 new guests an hour from one network (the guest limit is shared with app/start).
   // If a limit can't be checked, let people in.
   const visitor = await visitorKey();
   if (!prompt && !(await withinLimit(`demo:${visitor}`, DEMO_LIMIT.max, DEMO_LIMIT.windowSeconds, { failOpen: true }))) return NextResponse.redirect(`${origin}/login?error=demo_busy`);

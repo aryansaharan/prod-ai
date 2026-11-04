@@ -188,7 +188,7 @@ export default async function Landing() {
                 <PencilBox on seed={7} />
                 <div>
                   <h3 className="text-lead font-semibold">Open the code anywhere</h3>
-                  <p className="mt-1 text-body text-muted-foreground">Take it to Cursor, VS Code or your own editor whenever you want the wheel, and bring it back.</p>
+                  <p className="mt-1 text-body text-muted-foreground">Download the code for Cursor, VS Code or your own editor whenever you want the wheel.</p>
                 </div>
               </li>
             </ul>

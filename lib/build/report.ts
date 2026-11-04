@@ -20,7 +20,7 @@ export type BuildStep = {
   ms?: number;
 };
 
-/** A tool call the helper made in a test run. Gated tools aren't run: the helper stops and asks a person. */
+/** A tool call the helper made in a test run. A gated tool asks first; in a test run a stand-in person says yes, the call runs on sandbox stubs, and `asked` records that it asked. */
 export type ToolCallSeen = { toolId: string; name: string; access: "read" | "write" | "irreversible"; asked: boolean; input: string };
 
 /** What the judge suggests when a test run fails: a rule for the helper, or a tool that should ask first. */

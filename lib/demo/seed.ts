@@ -21,7 +21,8 @@ const count = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? on
  * Rehearsal history that matches the story the ledger tells: every rehearsal
  * ran during the build, Settlement's payout rehearsals failed before the
  * approval gate was added, and the re-run passed all of them.
- * Outcomes come from the same judge as Agents › Rehearsals (lib/sim/rehearse.ts).
+ * Outcomes come from lib/sim/rehearse.ts, a deterministic check of each helper's settings (not a Claude-played run);
+ * the runtime gates irreversible tools regardless (lib/agents/tools.ts approvalFor).
  */
 function withBuildRehearsals(planned: Blueprint, built: Blueprint, firstRun: string, reRun: string): Blueprint {
   const next = structuredClone(built);
